@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import api from '@/services/api/index';
 import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
@@ -8,15 +9,23 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    icon: 'mdi-home',
     component: Home,
+  },
+  {
+    path: '/exams',
+    name: 'Esami',
+    icon: 'mdi-clipboard-text',
+    groupHome: true,
+    // eslint-disable-next-line no-return-await
+    fetchItems: async () => await api.fetchUserExamsCategories(),
+    component: () => import('../views/Exams.vue'),
   },
   {
     path: '/about',
     name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    icon: 'mdi-email',
+    component: () => import('../views/About.vue'),
   },
 ];
 
