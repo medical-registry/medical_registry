@@ -1,12 +1,13 @@
 <template>
-  <div :align="align" :class="align === 'right'?'pl-10':''">
-    <span class="text-md-body-1 text-sm-body-2 font-weight-bold">
-      {{datum.displayName}}
+  <div :align="align">
+    <span class="text-md-body-1 text-sm-body-2 text-body-2 font-weight-bold">
+      {{datum? datum.displayName: displayName}}
     </span>
-    <br v-if="datum.fullWidth"/>
-    <span class="text-md-body-1 text-sm-body-2 font-weight-regular">
-      <span v-if="!datum.extractor">{{profile[datum.field]}}</span>
-      <span v-else>{{datum.extractor(profile)}}</span>
+    <br v-if="!datum || datum.fullWidth"/>
+    <span class="text-md-body-1 text-sm-body-2 text-body-2 font-weight-regular">
+      <span v-if="!value && !datum.extractor">{{profile[datum.field]}}</span>
+      <span v-else-if="!value">{{datum.extractor(profile)}}</span>
+      <span v-else>{{value}}</span>
     </span>
   </div>
 </template>
@@ -16,6 +17,8 @@ export default {
   props: {
     datum: null,
     profile: null,
+    value: null,
+    displayName: null,
     align: {
       type: String,
       required: false,

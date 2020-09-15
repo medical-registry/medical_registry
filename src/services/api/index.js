@@ -147,10 +147,33 @@ const fetchUserPrescriptions = (userId) => Promise.resolve({
     ],
 });
 
+// eslint-disable-next-line no-unused-vars
+const fetchUserContacts = (userId) => Promise.resolve({
+  data: [
+    {
+      id_contact: 1,
+      id_person: 2,
+      name: 'Maria Bianchi',
+      typology: 'phone',
+      contact: '+39 321 567 8904',
+      note: 'Madre',
+    },
+    {
+      id_contact: 3,
+      id_person: 3,
+      name: 'Luca Rossi',
+      typology: 'phone',
+      contact: '+39 456 678 9012',
+      note: 'Padre',
+    },
+  ],
+});
+
 export default {
   fetchUserExamsRegister,
   fetchUserExamsCategories,
   fetchPatientProfile,
   fetchPatientActiveDiagnosis,
   fetchUserPrescriptions,
+  fetchUserContacts,
 };
