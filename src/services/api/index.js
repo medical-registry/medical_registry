@@ -169,6 +169,27 @@ const fetchUserContacts = (userId) => Promise.resolve({
   ],
 });
 
+// eslint-disable-next-line no-unused-vars
+const fetchUserAllergies = (userId) => Promise.resolve(
+  {
+    data: [
+      {
+        id_person: 1,
+        id_care: 1,
+        name: '',
+        id_allergy: 24,
+        allergy: {
+          id: 24,
+          name: 'PIOPPO',
+          category: 'ALBERI',
+        },
+        severity: 'MEDIA',
+        intolerance: 'N',
+        from: '2019-04-02',
+      },
+    ],
+  },
+);
 export default {
   fetchUserExamsRegister,
   fetchUserExamsCategories,
@@ -176,4 +197,5 @@ export default {
   fetchPatientActiveDiagnosis,
   fetchUserPrescriptions,
   fetchUserContacts,
+  fetchUserAllergies,
 };

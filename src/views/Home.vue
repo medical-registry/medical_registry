@@ -82,14 +82,21 @@
         </v-row>
       </v-card>
       <v-layout row wrap>
-        <v-flex md6 sm12>
+        <v-flex md4 sm12>
+          <ActiveTimeline
+            type="allergies"
+            :user-id="patientProfile.id"
+            title="Allergie Attive"
+          />
+        </v-flex>
+        <v-flex md4 sm12>
             <ActiveTimeline
               type="diagnosis"
               :user-id="patientProfile.id"
               title="Diagnosi Attive"
             />
         </v-flex>
-        <v-flex md6 sm12>
+        <v-flex md4 sm12>
             <ActiveTimeline
               type="prescriptions"
               :user-id="patientProfile.id"
