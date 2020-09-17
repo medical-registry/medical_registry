@@ -122,6 +122,7 @@ const isFieldPresent = (profile, fieldName) => profile[fieldName] !== '' && prof
 const fields = [
   { field: 'sex', displayName: 'Sesso', section: 'top' },
   { field: 'birthdate', displayName: 'Data di Nascita', section: 'info' },
+  { field: 'blood_group', displayName: 'Gruppo Sanguigno', section: 'top' },
   {
     field: 'age',
     displayName: 'Età',
@@ -130,7 +131,6 @@ const fields = [
     extractor: (profile) => computeAge(profile.birthdate),
     section: 'top',
   },
-  { field: 'blood_group', displayName: 'Gruppo Sanguigno', section: 'top' },
   {
     field: 'country_mother',
     displayName: 'Nazionalità Materna',

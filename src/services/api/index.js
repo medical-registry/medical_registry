@@ -79,7 +79,7 @@ const fetchPatientProfile = (userId) => Promise.resolve(
       telephone_2: '+390987654321',
       email: 'mario.rossi@email.com',
       particular_signs: 'Neo sul braccio destro',
-      blood_group: '0-',
+      blood_group: 'AB-',
     },
   },
 );
