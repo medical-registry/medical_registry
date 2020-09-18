@@ -1,0 +1,55 @@
+<template>
+  <v-layout fill-height fluid class="blue darken-1">
+    <v-row align="center"
+           justify="center">
+      <v-card  align="center" class="px-10 py-5 blue darken-1" elevation="0">
+        <LoginDialog button-text="Accedi Come Paziente"
+                     headline-text="Accesso Pazienti"
+                     :login-call-back="this.patientLogin"
+        />
+        <LoginDialog button-text="Accedi Come Dottore"
+                     headline-text="Accesso Dottori"
+                     :login-call-back="this.doctorLogin"
+        />
+        <LoginDialog button-text="Accedi Come Operatore Sanitario"
+                     headline-text="Accesso Operatori Sanitari"
+                     :login-call-back="this.operatorLogin"
+        />
+      </v-card>
+    </v-row>
+  </v-layout>
+</template>
+
+<script>
+import api from '@/services/api/';
+import LoginDialog from '@/components/login/LoginDialog.vue';
+
+export default {
+  name: 'Login',
+  components: { LoginDialog },
+  methods: {
+    // eslint-disable-next-line no-unused-vars
+    patientLogin(email, password) {
+      console.log(`patient login called ${email}, ${password}`);
+      api.login(email, password)
+        .then((user) => {
+          this.$store.commit('setUser', user);
+          this.$router.push({ path: '/patient_home' });
+        })
+        .catch((e) => {
+          console.log(e.message);
+        });
+    },
+    doctorLogin() {
+      console.log('patient login called');
+    },
+    operatorLogin() {
+      console.log('patient login called');
+    },
+  },
+};
+</script>
+
+<style scoped>
+
+</style>

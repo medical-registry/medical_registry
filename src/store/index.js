@@ -3,11 +3,9 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const Store = new Vuex.Store({
   state: () => ({
     user: {
-      id: 123,
-      userType: 'patient',
     },
     navigation: {
       leftDrawer: false,
@@ -20,9 +18,15 @@ export default new Vuex.Store({
     setLeftDrawer(state, value) {
       state.navigation.leftDrawer = value;
     },
+    setUser(state, value) {
+      state.user = value;
+    },
   },
   actions: {
   },
   modules: {
   },
 });
+
+export default () => Store;
+export { Store };

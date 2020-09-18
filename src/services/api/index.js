@@ -1,4 +1,5 @@
 import moment from 'moment';
+import db from '@/services/database';
 
 // eslint-disable-next-line no-unused-vars
 const fetchUserExamsRegister = (userId) => Promise.resolve(
@@ -59,30 +60,18 @@ const fetchUserExamsCategories = async (userId) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-const fetchPatientProfile = (userId) => Promise.resolve(
-  {
-    data: {
-      id: 123,
-      code: 'MRORSS88T12F205H',
-      name: 'Mario',
-      surname: 'Rossi',
-      birthdate: '12/11/1988',
-      sex: 'M',
-      address: 'Piazza della Scala 2',
-      city: 'Milano',
-      zip_code: '20121',
-      country: 'IT',
-      country_mother: 'IT',
-      country_father: 'IT',
-      urgent_info: 'Allergia all\'Amoxicillina. Celiachia.',
-      telephone_1: '+391234567890',
-      telephone_2: '+390987654321',
-      email: 'mario.rossi@email.com',
-      particular_signs: 'Neo sul braccio destro',
-      blood_group: 'AB-',
-    },
-  },
-);
+const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
+  db.register.where({ id: userId })
+    .first((user) => {
+      if (!user) {
+        reject(new Error(`no entry in 'register' for id: ${userId}`));
+      } else {
+        resolve({
+          data: user,
+        });
+      }
+    });
+});
 
 // eslint-disable-next-line no-unused-vars
 const fetchPatientActiveDiagnosis = (userId) => Promise.resolve(
@@ -148,25 +137,17 @@ const fetchUserPrescriptions = (userId) => Promise.resolve({
 });
 
 // eslint-disable-next-line no-unused-vars
-const fetchUserContacts = (userId) => Promise.resolve({
-  data: [
-    {
-      id_contact: 1,
-      id_person: 2,
-      name: 'Maria Bianchi',
-      typology: 'phone',
-      contact: '+39 321 567 8904',
-      note: 'Madre',
-    },
-    {
-      id_contact: 3,
-      id_person: 3,
-      name: 'Luca Rossi',
-      typology: 'phone',
-      contact: '+39 456 678 9012',
-      note: 'Padre',
-    },
-  ],
+const fetchUserContacts = (userId) => new Promise((resolve, reject) => {
+  db.contact.where({ id_person: userId })
+    .toArray((data) => {
+      if (!data) {
+        reject(new Error('contact fetching error'));
+      } else {
+        resolve({
+          data,
+        });
+      }
+    });
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -190,6 +171,24 @@ const fetchUserAllergies = (userId) => Promise.resolve(
     ],
   },
 );
+
+const login = (email, password) => new Promise((resolve, reject) => {
+  db.users.where('email')
+    .equalsIgnoreCase(email)
+    .first((user) => {
+      if (!user) {
+        reject(new Error('email is not registered'));
+      } else if (user.password !== password) {
+        reject(new Error('incorrect password'));
+      } else {
+        resolve({
+          id: user,
+          type: user.type,
+        });
+      }
+    });
+});
+
 export default {
   fetchUserExamsRegister,
   fetchUserExamsCategories,
@@ -198,4 +197,5 @@ export default {
   fetchUserPrescriptions,
   fetchUserContacts,
   fetchUserAllergies,
+  login,
 };

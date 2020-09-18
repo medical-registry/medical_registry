@@ -1,0 +1,140 @@
+{
+  "version": 2,
+  "defs": [
+    {
+      "table": "metas",
+      "columns": ["key", "value"],
+      "indexes": "&key"
+    },
+    {
+      "table": "users",
+      "columns": ["email", "id", "type", "password"],
+      "indexes": "&email,&id,type"
+    },
+    {
+      "table": "allergies",
+      "columns": ["id_person", "id_care", "name", "id_allergy", "severity", "intolerance", "from", "to", "note", "creation", "update"],
+      "indexes": "&[id_care+id_person],id_care,id_person"
+    },
+    {
+      "table": "allergy_register",
+      "columns": ["id", "name", "category"],
+      "indexes": "&id"
+    },
+    {
+      "table": "choices",
+      "columns": ["category", "value"],
+      "indexes": "&[category+value],category,value"
+    },
+    {
+      "table": "city_register",
+      "columns": ["name", "province", "country"],
+      "indexes": "&[name+province+country],name,province,country"
+    },
+    {
+      "table": "contact",
+      "columns": ["id_contact", "id_person", "name", "typology", "contact", "note", "creation", "update"],
+      "indexes": "&[id_contact+id_person],id_contact,id_person"
+    },
+    {
+      "table": "disease_register",
+      "columns": ["id", "category", "name", "sex"],
+      "indexes": "&id"
+    },
+    {
+      "table": "diseases",
+      "columns": ["id_person", "id_care", "name", "id_disease", "chronic", "note", "body_impacted", "from", "to", "medical_exemption", "medical_exemption_code", "creation", "update"],
+      "indexes": "&[id_person+id_care],id_person,id_care"
+    },
+    {
+      "table": "diseases_parental",
+      "columns": ["id_person", "id_care", "name", "id_disease", "chronic", "note", "body_impacted", "from", "to", "discovered_at_age", "parent_type", "creation", "update"],
+      "indexes": "&[id_care+id_person],id_care,id_person"
+    },
+    {
+      "table": "doctor_register",
+      "columns": ["id", "name", "surname", "title", "id_location", "location_name", "contact_1", "contact_2"],
+      "indexes": "&id"
+    },
+    {
+      "table": "exam_register",
+      "columns": ["id", "category", "name", "sex"],
+      "indexes": "&id"
+    },
+    {
+      "table": "exams",
+      "columns": ["id_person", "id_care", "name", "id_exam", "diagnostic_question", "note", "body_impacted", "from", "to", "time", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update", "requisites", "receipit_code", "highlight", "value", "unit"],
+      "indexes": "&[id_person+id_care],id_person,id_care"
+    },
+    {
+      "table": "filepath",
+      "columns": ["id_person", "id_care", "id_path", "id_category", "path", "title", "date", "description", "creation", "update"],
+      "indexes": "&[id_person+id_path+id_care],id_person,id_path,id_care"
+    },
+    {
+      "table": "hospitalization",
+      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "name", "acceptance", "discharge", "note", "body_impacted", "from", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update", "to"],
+      "indexes": "&[id_person+id_care],id_person,id_care"
+    },
+    {
+      "table": "intervention_register",
+      "columns": ["id", "category", "name", "sex"],
+      "indexes": "&id"
+    },
+    {
+      "table": "interventions",
+      "columns": ["id_person", "id_care", "id_hospitalization", "id_trauma", "id_disease", "name", "id_intervention", "note", "body_impacted", "from", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update"],
+      "indexes": "&[id_person+id_care],id_person,id_care"
+    },
+    {
+      "table": "location_register",
+      "columns": ["id", "name", "city", "address", "zip_code", "id_nation", "phone"],
+      "indexes": "&id"
+    },
+    {
+      "table": "medicine_register",
+      "columns": ["id", "equivalent", "active_principle", "name", "aic_code", "code", "category"],
+      "indexes": "&id"
+    },
+    {
+      "table": "medicines",
+      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergies", "name", "id_medicine", "dosage", "unit", "body_impacted", "daily_frequency", "from", "to", "creation", "update"],
+      "indexes": "&[id_person+id_care],id_person,id_care"
+    },
+    {
+      "table": "nation_register",
+      "columns": ["country", "it", "en"],
+      "indexes": "&[country+it+en],country,en,it"
+    },
+    {
+      "table": "parental_link",
+      "columns": ["id_person", "id_parent", "parent_type", "creation", "update"],
+      "indexes": "&[id_parent+id_person],id_parent,id_person"
+    },
+    {
+      "table": "register",
+      "columns": ["id", "code", "name", "surname", "birthdate", "sex", "address", "city", "zip_code", "country", "country_mother", "country_father", "urgent_info", "telephone_1", "telephone_2", "email", "particular_signs", "blood_group", "peso", "altezza"],
+      "indexes": "&id"
+    },
+    {
+      "table": "screening_register",
+      "columns": ["id_screening", "id_exam", "age_from", "age_to", "sex", "frequency"],
+      "indexes": "&id_screening"
+    },
+    {
+      "table": "therapies",
+      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergy", "name", "id_therapy", "medicine", "id_medicine", "dosage", "daily_frequency", "note", "body_impacted", "from", "to", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update"],
+      "indexes": "&[id_person+id_care+from],id_person,id_care,from"
+    },
+    {
+      "table": "therapy_register",
+      "columns": ["id", "name", "category"],
+      "indexes": "&id"
+    },
+    {
+      "table": "traumas",
+      "columns": ["id_person", "id_trauma", "name", "severity", "description", "body_impacted", "from", "to", "time", "note", "creation", "update"],
+      "indexes": "&[id_person+id_trauma+from],id_person,id_trauma,from"
+    }
+  ]
+}

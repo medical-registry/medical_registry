@@ -1,11 +1,13 @@
-import './registerServiceWorker';
+import '@/registerServiceWorker';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
 import Vue from 'vue';
 import axios from 'axios';
-import router from './router';
-import store from './store';
-import vuetify from './plugins/vuetify';
-import App from './App.vue';
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
+import vuetify from '@/plugins/vuetify';
+import store from '@/store';
+import router from '@/router';
+import App from '@/App.vue';
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
