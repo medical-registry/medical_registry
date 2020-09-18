@@ -17,7 +17,7 @@ const routes = [
     meta: { requiresLogin: true },
   },
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: () => import('@/views/Login.vue'),
   },
