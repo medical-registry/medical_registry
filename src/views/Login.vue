@@ -23,14 +23,36 @@
 <script>
 import api from '@/services/api/';
 import LoginDialog from '@/components/login/LoginDialog.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Login',
   components: { LoginDialog },
+  mounted() {
+    if (this.user && this.user.id) {
+      switch (this.user.type) {
+        case 'patient': this.$router.push({ path: '/patient_home' }); break;
+        default: break;
+      }
+    }
+  },
+  computed: mapState(['user']),
+  watch: {
+    user(newValue, oldValue) {
+      console.log(`Updating from ${oldValue} to ${newValue}`);
+
+      // Do whatever makes sense now
+      if (newValue && newValue.id) {
+        switch (newValue.type) {
+          case 'patient': this.$router.push({ path: '/patient_home' }); break;
+          default: break;
+        }
+      }
+    },
+  },
   methods: {
     // eslint-disable-next-line no-unused-vars
     patientLogin(email, password) {
-      console.log(`patient login called ${email}, ${password}`);
       api.login(email, password)
         .then((user) => {
           this.$store.commit('setUser', user);

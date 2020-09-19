@@ -1,6 +1,7 @@
 import Dexie from 'dexie';
 import { version, defs } from '@/assets/db_def.json';
 import dbData from '@/assets/db_data.json';
+import { keyBy } from '@/services/util';
 
 const stores = {};
 const schemas = {};
@@ -21,18 +22,16 @@ const buildObject = (columns, data) => {
 const populateDB = () => {
   console.log('populating db db data');
   const { records } = dbData;
-  records.forEach((r, i) => {
-    const table = r[0];
+  const grouped = keyBy(records, 0, true);
+  const promises = [];
+  Object.entries(grouped).forEach(([table, entries]) => {
     const schema = schemas[table];
-    if (!schema) {
-      throw new Error(`${table} has no schema`);
-    }
-    const record = buildObject(schema, r);
-    db[table].add(record);
-    console.log(`db loaded ${Math.floor((i / records.length) * 100.0)}%`);
+    const objs = entries.map((record) => buildObject(schema, record));
+    promises.push(db[table].bulkAdd(objs));
   });
-  db.metas.add({ key: 'version', val: version });
-  console.log('db population complete');
+  return Promise.all(promises)
+    .then(() => db.metas.add({ key: 'version', val: version }))
+    .then(() => console.log('db population complete'));
 };
 
 db.version(version)
@@ -40,23 +39,16 @@ db.version(version)
 
 const init = () => {
   console.log('init');
-  return new Promise((resolve) => {
-    if (!db.metas) {
-      setTimeout(() => {
-        populateDB();
-        resolve();
-      });
-    } else {
-      db.metas.get('version', (o) => {
-        setTimeout(() => {
-          if (!o || !o.val || o.val !== version) {
-            populateDB();
-          }
-          resolve();
-        });
-      });
-    }
-  });
+  if (!db.metas) {
+    return populateDB();
+  }
+  return db.metas.get('version')
+    .then((o) => {
+      if (!o || o.val !== version) {
+        return populateDB();
+      }
+      return Promise.resolve();
+    });
 };
 
 export default db;

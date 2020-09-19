@@ -17,7 +17,7 @@
             <span class="text-h7">{{formatDate(item.from)}}</span>
             <br>
             <strong>
-              {{item.name}}
+              {{item.disease.name}}
               <span v-if="item.chronic">(Cronico)</span>
             </strong>
             <div class="caption" v-if="item.body_impacted">{{item.body_impacted}}</div>
@@ -27,11 +27,14 @@
             <span class="text-h7">{{formatDate(item.from)}}</span>
             <br>
             <strong>
-              {{item.name}} ({{item.medicine.active_principle}})
+              {{item.medicine.name}} ({{item.medicine.active_principle}})
             </strong>
-            <div class="caption">{{item.dosage}}, {{item.daily_frequency}}</div>
-            <div class="caption">
+            <div class="caption">{{item.daily_frequency}}</div>
+            <div class="caption" v-if="item.disease">
               Per il trattamento di: <strong>{{item.disease.name}}</strong>
+            </div>
+            <div class="caption" v-else-if="item.allergy">
+              Per allergia: <strong>{{item.allergy.name}}</strong>
             </div>
           </v-flex>
           <v-flex v-else-if="type === 'allergies'">
@@ -77,18 +80,24 @@ export default {
   methods: {
     formatDate: (value) => moment(value).format('DD MMM, YY'),
   },
-  mounted() {
+  created() {
     let promise;
     if (this.type === 'diagnosis') {
-      promise = api.fetchPatientActiveDiagnosis(this.userId);
+      promise = api.fetchPatientDiagnosis(this.userId);
     } else if (this.type === 'prescriptions') {
       promise = api.fetchUserPrescriptions(this.userId);
     } else if (this.type === 'allergies') {
       promise = api.fetchUserAllergies(this.userId);
     }
-    promise.then((response) => {
-      this.events = response.data.sort(compareEvents('desc'));
-    });
+    promise
+      .then((response) => {
+        console.log(response.data
+          .filter((item) => item.to === null)
+          .sort(compareEvents('desc')));
+        this.events = response.data
+          .filter((item) => item.to === null)
+          .sort(compareEvents('desc'));
+      });
   },
 };
 </script>

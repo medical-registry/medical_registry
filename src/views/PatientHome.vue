@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-container class="mb-12 pa-3 pa-sm-3 pa-md-8">
+    <v-container class="mb-12 pa-3 pa-sm-3 pa-md-8" v-if="patientProfile">
       <v-card class="pa-10 mb-10">
         <v-row align="center" justify="start">
           <v-flex md2 sm2 xs3>
@@ -122,15 +122,29 @@ const isFieldPresent = (profile, fieldName) => profile[fieldName] !== '' && prof
 const fields = [
   { field: 'sex', displayName: 'Sesso', section: 'top' },
   { field: 'birthdate', displayName: 'Data di Nascita', section: 'info' },
-  { field: 'blood_group', displayName: 'Gruppo Sanguigno', section: 'top' },
+  {
+    field: 'weight',
+    displayName: 'Peso',
+    computed: true,
+    extractor: (profile) => `${profile.peso}Kg`,
+    section: 'top',
+  },
+  {
+    field: 'height',
+    displayName: 'Altezza',
+    computed: true,
+    extractor: (profile) => `${profile.altezza}cm`,
+    section: 'top',
+  },
   {
     field: 'age',
     displayName: 'Età',
     fullWidth: false,
     computed: true,
-    extractor: (profile) => computeAge(profile.birthdate),
+    extractor: (profile) => `${computeAge(profile.birthdate)} anni`,
     section: 'top',
   },
+  { field: 'blood_group', displayName: 'Gruppo Sanguigno', section: 'top' },
   {
     field: 'country_mother',
     displayName: 'Nazionalità Materna',

@@ -264,6 +264,22 @@ const COUNTRIES = {
 
 const resolveCountryByCode = (code) => COUNTRIES[code];
 
+const keyBy = (array, field, multiEntry = false) => {
+  const res = {};
+  array.forEach((item) => {
+    if (multiEntry) {
+      if (!res[item[field]]) {
+        res[item[field]] = [];
+      }
+      res[item[field]].push(item);
+    } else {
+      res[item[field]] = item;
+    }
+  });
+  return res;
+};
+
 module.exports = {
   resolveCountryByCode,
+  keyBy,
 };

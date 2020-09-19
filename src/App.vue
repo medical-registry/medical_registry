@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
-    <left-drawer v-if="loggedIn"/>
-    <app-bar v-if="loggedIn"/>
+    <left-drawer v-if="user && user.id"/>
+    <app-bar v-if="user && user.id"/>
     <v-main v-if="dbReady">
       <router-view/>
     </v-main>
@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import { init } from '@/services/database';
 import LeftDrawer from './components/LeftDrawer.vue';
 import AppBar from './components/AppBar.vue';
@@ -43,8 +45,13 @@ export default {
   props: {
     source: String,
   },
+  computed: mapState(['user']),
+  watch: {
+    user(newValue) {
+      this.user = newValue;
+    },
+  },
   created() {
-    this.loggedIn = this.$store.user && this.$store.user.id;
     init()
       .then(() => {
         this.dbReady = true;
@@ -54,7 +61,6 @@ export default {
   },
   data: () => ({
     drawer: null,
-    loggedIn: false,
     dbReady: false,
     loadingPercent: 0,
   }),

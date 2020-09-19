@@ -13,8 +13,7 @@ const routes = [
     name: 'Home',
     icon: 'mdi-home',
     component: PatientHome,
-    drawer: true,
-    meta: { requiresLogin: true },
+    meta: { requiresLogin: true, drawer: true },
   },
   {
     path: '/',
@@ -22,23 +21,25 @@ const routes = [
     component: () => import('@/views/Login.vue'),
   },
   {
+    path: '/login',
+    name: 'Login Page',
+    component: () => import('@/views/Login.vue'),
+  },
+  {
     path: '/exams',
     name: 'Esami',
     icon: 'mdi-clipboard-text',
-    groupHome: true,
-    drawer: true,
     // eslint-disable-next-line no-return-await
     fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Exams.vue'),
-    meta: { requiresLogin: true },
+    meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
   {
     path: '/about',
     name: 'About',
     icon: 'mdi-email',
-    drawer: true,
     component: () => import('../views/About.vue'),
-    meta: { requiresLogin: true },
+    meta: { requiresLogin: true, drawer: true },
   },
 ];
 
@@ -52,8 +53,6 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresLogin)
       && !(Store.state.user && Store.state.user.id)) {
     next('/login');
-  } else if (to.name === 'Login' && Store.state.user && Store.state.user.id) {
-    next('/');
   } else {
     next();
   }

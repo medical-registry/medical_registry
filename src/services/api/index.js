@@ -1,5 +1,5 @@
-import moment from 'moment';
 import db from '@/services/database';
+import { keyBy } from '@/services/util';
 
 // eslint-disable-next-line no-unused-vars
 const fetchUserExamsRegister = (userId) => Promise.resolve(
@@ -59,7 +59,6 @@ const fetchUserExamsCategories = async (userId) => {
     .then((response) => [...new Set(response.data.categories.map((item) => item.cateogy))]);
 };
 
-// eslint-disable-next-line no-unused-vars
 const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
   db.register.where({ id: userId })
     .first((user) => {
@@ -73,104 +72,110 @@ const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
     });
 });
 
-// eslint-disable-next-line no-unused-vars
-const fetchPatientActiveDiagnosis = (userId) => Promise.resolve(
-  {
-    data: [
-      {
-        id_person: 123,
-        id_care: 345,
-        name: 'FRATTURA DELLA ROTULA',
-        id_disease: 1396,
-        chronic: false,
-        note: 'Frattura pluriframmentata composta accompagnata da artrite reumatoide.',
-        body_impacted: 'Ginocchio sinistro',
-        from: moment().subtract(14, 'days').format(),
-      },
-      {
-        id_person: 123,
-        id_care: 345,
-        name: 'DIABETE MELLITO',
-        id_disease: 839,
-        chronic: true,
-        from: moment().subtract(400, 'days').format(),
-      },
-      {
-        id_person: 123,
-        id_care: 345,
-        name: 'CELIACHIA',
-        id_disease: 71,
-        chronic: true,
-        from: moment().subtract(3000, 'days').format(),
-      },
-    ],
-  },
-);
-
-// eslint-disable-next-line no-unused-vars
-const fetchUserPrescriptions = (userId) => Promise.resolve({
-  data:
-    [
-      {
-        id_person: 123,
-        name: 'ACARPHAGE*40 CPR 100 MG',
-        medicine: {
-          id: 2,
-          equivalent: 'ACARBOSIO 100MG 40 UNITÁ USO ORALE',
-          active_principle: 'ACARBOSIO',
-          name: 'ACARPHAGE*40 CPR 100 MG',
-          aic_code: 'MERCK SERONO SPA',
-          code: '38835144',
-          category: 'H1A',
-        },
-        disease: {
-          name: 'DIABETE MELLITO',
-          id_disease: 839,
-        },
-        dosage: '100 MG',
-        daily_frequency: '3 volte al giorno dopo i pasti',
-        from: moment()
-          .subtract(398, 'days')
-          .format(),
-      },
-    ],
-});
-
-// eslint-disable-next-line no-unused-vars
-const fetchUserContacts = (userId) => new Promise((resolve, reject) => {
-  db.contact.where({ id_person: userId })
-    .toArray((data) => {
-      if (!data) {
-        reject(new Error('contact fetching error'));
-      } else {
-        resolve({
-          data,
+const fetchPatientDiagnosis = (userId) => {
+  const result = [];
+  const diseaseIds = new Set();
+  return db.diseases
+    .where({ id_person: userId })
+    .toArray()
+    .then((data) => {
+      data.forEach((item) => {
+        result.push({
+          ...item,
+          to: item.to && item.to.length > 0 ? item.to : null,
+          chronic: item.chronic === '1',
         });
-      }
+        diseaseIds.add(parseInt(item.id_disease, 10));
+      });
+      return db.disease_register
+        .where('id')
+        .anyOf([...diseaseIds])
+        .toArray();
+    })
+    .then((diseaseDefs) => {
+      const idToDefMap = keyBy(diseaseDefs, 'id');
+      return {
+        data: result.map((item) => ({
+          ...item,
+          disease: idToDefMap[item.id_disease],
+        })),
+      };
     });
-});
+};
 
-// eslint-disable-next-line no-unused-vars
-const fetchUserAllergies = (userId) => Promise.resolve(
-  {
-    data: [
-      {
-        id_person: 1,
-        id_care: 1,
-        name: '',
-        id_allergy: 24,
-        allergy: {
-          id: 24,
-          name: 'PIOPPO',
-          category: 'ALBERI',
-        },
-        severity: 'MEDIA',
-        intolerance: 'N',
-        from: '2019-04-02',
-      },
-    ],
-  },
-);
+const fetchUserPrescriptions = (userId) => {
+  let prescriptions;
+  return db.medicines
+    .where({ id_person: userId })
+    .toArray()
+    .then((records) => {
+      prescriptions = records;
+      const medicineIds = new Set();
+      const diseaseIds = new Set();
+      const allergyIds = new Set();
+      records.forEach((record) => {
+        if (record.id_medicine && record.id_medicine !== '') {
+          medicineIds.add(parseInt(record.id_medicine, 10));
+        }
+        if (record.id_disease && record.id_disease !== '') {
+          diseaseIds.add(parseInt(record.id_disease, 10));
+        }
+        if (record.id_allergies && record.id_allergies !== '') {
+          allergyIds.add(parseInt(record.id_allergies, 10));
+        }
+        // eslint-disable-next-line no-param-reassign
+        record.to = !record.to || record.to === '' ? null : record.to;
+      });
+      return Promise.all([
+        db.medicine_register.where('id').anyOf([...medicineIds]).toArray(),
+        db.disease_register.where('id').anyOf([...diseaseIds]).toArray(),
+        db.allergy_register.where('id').anyOf([...allergyIds]).toArray(),
+      ]);
+    })
+    .then((values) => {
+      const [medicineDefs, diseaseDefs, allergyDefs] = values;
+      const idToMedicineDefs = keyBy(medicineDefs, 'id');
+      const idToDiseaseDefs = keyBy(diseaseDefs, 'id');
+      const idToAllergyDefs = keyBy(allergyDefs, 'id');
+      return {
+        data: prescriptions.map((item) => ({
+          ...item,
+          medicine: idToMedicineDefs[item.id_medicine],
+          disease: idToDiseaseDefs[item.id_disease],
+          allergy: idToAllergyDefs[item.id_allergies],
+        })),
+      };
+    });
+};
+
+const fetchUserContacts = (userId) => db.contact
+  .where({ id_person: userId })
+  .toArray()
+  .then((data) => ({ data }));
+
+const fetchUserAllergies = (userId) => {
+  let userAllergies;
+  return db.allergies
+    .where({ id_person: userId })
+    .toArray()
+    .then((res) => {
+      userAllergies = res;
+      const allergyIds = new Set();
+      res.forEach((item) => allergyIds.add(parseInt(item.id_allergy, 10)));
+      return db.allergy_register.where('id')
+        .anyOf([...allergyIds])
+        .toArray();
+    })
+    .then((allergyDefs) => {
+      const idToAllergy = keyBy(allergyDefs, 'id');
+      return {
+        data: userAllergies.map((item) => ({
+          ...item,
+          allergy: idToAllergy[item.id_allergy],
+        })),
+      };
+    });
+};
 
 const login = (email, password) => new Promise((resolve, reject) => {
   db.users.where('email')
@@ -182,7 +187,7 @@ const login = (email, password) => new Promise((resolve, reject) => {
         reject(new Error('incorrect password'));
       } else {
         resolve({
-          id: user,
+          id: user.id,
           type: user.type,
         });
       }
@@ -193,7 +198,7 @@ export default {
   fetchUserExamsRegister,
   fetchUserExamsCategories,
   fetchPatientProfile,
-  fetchPatientActiveDiagnosis,
+  fetchPatientDiagnosis,
   fetchUserPrescriptions,
   fetchUserContacts,
   fetchUserAllergies,
