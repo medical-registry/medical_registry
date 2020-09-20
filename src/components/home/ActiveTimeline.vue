@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="0">
+  <v-card elevation="0" >
     <v-card-title>
       {{title}}
     </v-card-title>
@@ -43,6 +43,11 @@
             <strong>
               {{item.allergy.name}} ({{item.allergy.category}})
             </strong>
+            <br>
+            <div class="caption" v-if="item.note">
+              Intensità: {{item.severity}}
+            </div>
+            <div class="caption" v-if="item.note">{{item.note}}</div>
           </v-flex>
         </v-layout>
       </v-timeline-item>
@@ -52,12 +57,16 @@
         Nessuna
       </v-card-title>
     </v-card-title>
+    <v-card-actions>
+      <AddAllergyDialog v-if="type === 'allergies'" :on-add="fetchData"/>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import moment from 'moment';
 import api from '@/services/api';
+import AddAllergyDialog from '@/components/home/AddAllergyDialog.vue';
 
 const compareEvents = (order) => (o1, o2) => {
   const d1 = order === 'asc' ? new Date(o1.from) : new Date(o2.from);
@@ -67,6 +76,7 @@ const compareEvents = (order) => (o1, o2) => {
 
 export default {
   name: 'ActiveTimeline',
+  components: { AddAllergyDialog },
   props: {
     userId: null,
     type: null,
@@ -79,25 +89,25 @@ export default {
   },
   methods: {
     formatDate: (value) => moment(value).format('DD MMM, YY'),
+    fetchData() {
+      let promise;
+      if (this.type === 'diagnosis') {
+        promise = api.fetchPatientDiagnosis(this.userId);
+      } else if (this.type === 'prescriptions') {
+        promise = api.fetchUserPrescriptions(this.userId);
+      } else if (this.type === 'allergies') {
+        promise = api.fetchUserAllergies(this.userId);
+      }
+      promise
+        .then((response) => {
+          this.events = response.data
+            .filter((item) => item.to === null)
+            .sort(compareEvents('desc'));
+        });
+    },
   },
   created() {
-    let promise;
-    if (this.type === 'diagnosis') {
-      promise = api.fetchPatientDiagnosis(this.userId);
-    } else if (this.type === 'prescriptions') {
-      promise = api.fetchUserPrescriptions(this.userId);
-    } else if (this.type === 'allergies') {
-      promise = api.fetchUserAllergies(this.userId);
-    }
-    promise
-      .then((response) => {
-        console.log(response.data
-          .filter((item) => item.to === null)
-          .sort(compareEvents('desc')));
-        this.events = response.data
-          .filter((item) => item.to === null)
-          .sort(compareEvents('desc'));
-      });
+    this.fetchData();
   },
 };
 </script>
