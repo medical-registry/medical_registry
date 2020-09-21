@@ -83,7 +83,7 @@ const fetchPatientDiagnosis = (userId) => {
         result.push({
           ...item,
           to: item.to && item.to.length > 0 ? item.to : null,
-          chronic: item.chronic === '1',
+          chronic: item.chronic === '1' || item.chronic === true,
         });
         diseaseIds.add(parseInt(item.id_disease, 10));
       });

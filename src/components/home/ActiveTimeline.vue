@@ -59,6 +59,7 @@
     </v-card-title>
     <v-card-actions>
       <AddAllergyDialog v-if="type === 'allergies'" :on-add="fetchData"/>
+      <AddDiseaseDialog v-if="type === 'diagnosis'" :on-add="fetchData"/>
     </v-card-actions>
   </v-card>
 </template>
@@ -67,6 +68,7 @@
 import moment from 'moment';
 import api from '@/services/api';
 import AddAllergyDialog from '@/components/home/AddAllergyDialog.vue';
+import AddDiseaseDialog from '@/components/home/AddDiseaseDialog.vue';
 
 const compareEvents = (order) => (o1, o2) => {
   const d1 = order === 'asc' ? new Date(o1.from) : new Date(o2.from);
@@ -76,7 +78,7 @@ const compareEvents = (order) => (o1, o2) => {
 
 export default {
   name: 'ActiveTimeline',
-  components: { AddAllergyDialog },
+  components: { AddDiseaseDialog, AddAllergyDialog },
   props: {
     userId: null,
     type: null,

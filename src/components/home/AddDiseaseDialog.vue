@@ -14,7 +14,7 @@
     </template>
     <v-card>
       <v-card-title>
-        <span class="headline">Aggiungi Allergia</span>
+        <span class="headline">Aggiungi Diagnosi</span>
       </v-card-title>
       <v-card-text>
         <v-form
@@ -31,10 +31,10 @@
             hide-selected
             item-text="name"
             item-value="API"
-            label="Nome Allergia"
+            label="Diagnosi"
             prepend-icon="mdi-database-search"
             return-object
-            :rules="[v => !!v || 'Seleziona Allergia']"
+            :rules="[v => !!v || 'Seleziona Diagnosi']"
           />
           <v-menu
             v-model="fromDialog"
@@ -65,7 +65,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="to"
-                label="Data guarigione"
+                label="Data Guarigione"
                 prepend-icon="event"
                 readonly
                 v-bind="attrs"
@@ -74,14 +74,11 @@
             <v-date-picker v-model="to" @input="toDialog = false"/>
           </v-menu>
           <v-checkbox
-            v-model="intolerance"
-            label="Intolleranza"/>
-          <v-select
-            v-model="severity"
-            :items="['BASSA', 'MEDIA', 'ALTA']"
-            :rules="[v => !!v || 'Selezione Intensità']"
-            label="Intensità"
-            required
+            v-model="chronic"
+            label="Malattia Cronica"/>
+          <v-text-field
+            v-model="body_impacted"
+            label="Parte Del Corpo Interessata"
           />
           <v-textarea
             class="mt-5"
@@ -105,11 +102,11 @@
 </template>
 
 <script>
-import db from '@/services/database';
 import moment from 'moment';
+import db from '@/services/database';
 
 export default {
-  name: 'AddAllergyDialog',
+  name: 'AddDiseaseDialog',
   props: {
     onAdd: null,
   },
@@ -118,16 +115,15 @@ export default {
     fromDialog: false,
     toDialog: false,
     dialog: false,
-    id_allergy: null,
-    severity: null,
-    intolerance: null,
-    from: null,
-    to: null,
-    note: null,
     entries: [],
+    body_impacted: null,
     isLoading: false,
     model: null,
     search: null,
+    from: null,
+    to: null,
+    chronic: false,
+    note: null,
   }),
 
   computed: {
@@ -147,21 +143,21 @@ export default {
   },
   methods: {
     save() {
-      db.allergies.get({
+      db.diseases.get({
         id_person: this.user.id,
-        id_allergy: this.model.id,
+        id_disease: this.model.id,
         from: this.from,
       })
         .then((o) => {
           if (o) {
             return Promise.reject(new Error('present'));
           }
-          return db.allergies
+          return db.diseases
             .add({
               id_person: this.user.id,
-              id_allergy: this.model.id,
-              severity: this.severity,
-              intolerance: this.intolerance,
+              id_disease: this.model.id,
+              chronic: this.chronic,
+              body_impacted: this.body_impacted,
               from: this.from,
               to: this.to,
               note: this.note,
@@ -192,7 +188,7 @@ export default {
       }
       const regexp = new RegExp(`.*${val}.*`, 'gi');
       this.isLoading = true;
-      db.allergy_register
+      db.disease_register
         .filter((item) => regexp.test(item.name))
         .toArray()
         .then((res) => {

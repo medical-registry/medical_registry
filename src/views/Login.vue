@@ -51,7 +51,6 @@ export default {
     },
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
     patientLogin(email, password) {
       api.login(email, password)
         .then((user) => {
