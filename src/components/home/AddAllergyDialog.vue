@@ -22,19 +22,12 @@
           v-model="valid"
           lazy-validation
         >
-          <v-autocomplete
-            v-model="model"
-            :items="items"
-            :loading="isLoading"
-            :search-input.sync="search"
-            hide-no-data
-            hide-selected
-            item-text="name"
-            item-value="API"
-            label="Nome Allergia"
-            prepend-icon="mdi-database-search"
-            return-object
-            :rules="[v => !!v || 'Seleziona Allergia']"
+          <AutocompleteSearch
+            invalid-hint="Seleziona Allergia"
+            label="Allergia"
+            :required="true"
+            :table="table"
+            v-on:change="allergy = $event"
           />
           <v-menu
             v-model="fromDialog"
@@ -44,7 +37,7 @@
             offset-y
             min-width="290px">
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field
+               <v-text-field
                 v-model="from"
                 label="Data Diagnosi"
                 prepend-icon="event"
@@ -107,13 +100,16 @@
 <script>
 import db from '@/services/database';
 import moment from 'moment';
+import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
 
 export default {
   name: 'AddAllergyDialog',
+  components: { AutocompleteSearch },
   props: {
     onAdd: null,
   },
   data: () => ({
+    table: db.allergy_register,
     valid: false,
     fromDialog: false,
     toDialog: false,
@@ -124,32 +120,19 @@ export default {
     from: null,
     to: null,
     note: null,
-    entries: [],
-    isLoading: false,
-    model: null,
-    search: null,
+    allergy: null,
   }),
 
   computed: {
     user() {
       return this.$store.state.user;
     },
-    fields() {
-      if (!this.model) return [];
-      return Object.keys(this.model).map((key) => ({
-        key,
-        value: this.model[key] || 'n/a',
-      }));
-    },
-    items() {
-      return this.entries;
-    },
   },
   methods: {
     save() {
       db.allergies.get({
         id_person: this.user.id,
-        id_allergy: this.model.id,
+        id_allergy: this.allergy.id,
         from: this.from,
       })
         .then((o) => {
@@ -159,7 +142,7 @@ export default {
           return db.allergies
             .add({
               id_person: this.user.id,
-              id_allergy: this.model.id,
+              id_allergy: this.allergy.id,
               severity: this.severity,
               intolerance: this.intolerance,
               from: this.from,
@@ -179,31 +162,6 @@ export default {
         .catch((e) => {
           console.log(e.message);
         });
-    },
-  },
-  watch: {
-    search(val, oldValue) {
-      console.log(`new: '${val}', old: ${oldValue} `);
-      if (val === oldValue || this.isLoading) return;
-      if (val && val.length <= 2) {
-        this.entries = [];
-        this.count = 0;
-        return;
-      }
-      const regexp = new RegExp(`.*${val}.*`, 'gi');
-      this.isLoading = true;
-      db.allergy_register
-        .filter((item) => regexp.test(item.name))
-        .toArray()
-        .then((res) => {
-          this.count = res.length;
-          this.entries = res;
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        // eslint-disable-next-line no-return-assign
-        .finally(() => (this.isLoading = false));
     },
   },
 };

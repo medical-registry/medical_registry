@@ -22,19 +22,12 @@
           v-model="valid"
           lazy-validation
         >
-          <v-autocomplete
-            v-model="model"
-            :items="items"
-            :loading="isLoading"
-            :search-input.sync="search"
-            hide-no-data
-            hide-selected
-            item-text="name"
-            item-value="API"
+          <AutocompleteSearch
+            invalid-hint="Seleziona Diagnosi"
             label="Diagnosi"
-            prepend-icon="mdi-database-search"
-            return-object
-            :rules="[v => !!v || 'Seleziona Diagnosi']"
+            :required="true"
+            :table="table"
+            v-on:change="disease = $event"
           />
           <v-menu
             v-model="fromDialog"
@@ -104,9 +97,11 @@
 <script>
 import moment from 'moment';
 import db from '@/services/database';
+import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
 
 export default {
   name: 'AddDiseaseDialog',
+  components: { AutocompleteSearch },
   props: {
     onAdd: null,
   },
@@ -115,37 +110,25 @@ export default {
     fromDialog: false,
     toDialog: false,
     dialog: false,
-    entries: [],
     body_impacted: null,
-    isLoading: false,
-    model: null,
-    search: null,
     from: null,
     to: null,
     chronic: false,
     note: null,
+    table: db.disease_register,
+    disease: null,
   }),
 
   computed: {
     user() {
       return this.$store.state.user;
     },
-    fields() {
-      if (!this.model) return [];
-      return Object.keys(this.model).map((key) => ({
-        key,
-        value: this.model[key] || 'n/a',
-      }));
-    },
-    items() {
-      return this.entries;
-    },
   },
   methods: {
     save() {
       db.diseases.get({
         id_person: this.user.id,
-        id_disease: this.model.id,
+        id_disease: this.disease.id,
         from: this.from,
       })
         .then((o) => {
@@ -155,7 +138,7 @@ export default {
           return db.diseases
             .add({
               id_person: this.user.id,
-              id_disease: this.model.id,
+              id_disease: this.disease.id,
               chronic: this.chronic,
               body_impacted: this.body_impacted,
               from: this.from,
@@ -175,31 +158,6 @@ export default {
         .catch((e) => {
           console.log(e.message);
         });
-    },
-  },
-  watch: {
-    search(val, oldValue) {
-      console.log(`new: '${val}', old: ${oldValue} `);
-      if (val === oldValue || this.isLoading) return;
-      if (val && val.length <= 2) {
-        this.entries = [];
-        this.count = 0;
-        return;
-      }
-      const regexp = new RegExp(`.*${val}.*`, 'gi');
-      this.isLoading = true;
-      db.disease_register
-        .filter((item) => regexp.test(item.name))
-        .toArray()
-        .then((res) => {
-          this.count = res.length;
-          this.entries = res;
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        // eslint-disable-next-line no-return-assign
-        .finally(() => (this.isLoading = false));
     },
   },
 };

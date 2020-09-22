@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "defs": [
     {
       "table": "metas",
@@ -99,7 +99,7 @@
     {
       "table": "medicines",
       "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergies", "name", "id_medicine", "dosage", "unit", "body_impacted", "daily_frequency", "from", "to", "creation", "update"],
-      "indexes": "++id_care,&[id_person+id_medicine+id_trauma+id_disease+id_intervention+id_allergies],id_person,id_medicine,id_trauma,id_disease,id_intervention,id_allergies"
+      "indexes": "++id_care,&[id_person+id_medicine+id_trauma+id_disease+id_intervention+id_allergies+from],id_person,id_medicine,id_trauma,id_disease,id_intervention,id_allergies"
     },
     {
       "table": "nation_register",

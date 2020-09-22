@@ -46,11 +46,11 @@ export default {
     source: String,
   },
   computed: mapState(['user']),
-  watch: {
-    user(newValue) {
-      this.user = newValue;
-    },
-  },
+  // watch: {
+  //   user(newValue) {
+  //     this.user = newValue;
+  //   },
+  // },
   created() {
     init()
       .then(() => {
