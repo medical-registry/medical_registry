@@ -19,34 +19,43 @@ const buildObject = (columns, data) => {
   return result;
 };
 
-const populateDB = () => {
+const populateDB = (progressCallback) => {
   console.log('populating db db data');
-  const { records } = dbData;
-  const grouped = keyBy(records, 0, true);
-  const promises = [];
-  Object.entries(grouped).forEach(([table, entries]) => {
-    const schema = schemas[table];
-    const objs = entries.map((record) => buildObject(schema, record));
-    promises.push(db[table].bulkAdd(objs));
-  });
-  return Promise.all(promises)
-    .then(() => db.metas.add({ key: 'version', val: version }))
-    .then(() => console.log('db population complete'));
+  return new Promise((resolve) => {
+    const { records } = dbData;
+    const grouped = keyBy(records, 0, true);
+    resolve({ totalRecords: records.length, grouped });
+  })
+    .then(({ totalRecords, grouped }) => {
+      const promises = [Promise.resolve().then(() => progressCallback(totalRecords, 0))];
+      Object.entries(grouped).forEach(([table, entries]) => {
+        const schema = schemas[table];
+        const objs = entries.map((record) => buildObject(schema, record));
+        promises.push(
+          db[table].bulkAdd(objs)
+            .then(() => progressCallback(totalRecords, entries.length)),
+        );
+      });
+      return Promise.all(promises)
+        .then(() => db.metas.add({ key: 'version', val: version }))
+        .then(() => console.log('db population complete'));
+    });
 };
 
 db.version(version)
   .stores(stores);
 
-const init = () => {
+const init = (progressCallback) => {
   console.log('init');
   if (!db.metas) {
-    return populateDB();
+    return populateDB(progressCallback);
   }
   return db.metas.get('version')
     .then((o) => {
       if (!o || o.val !== version) {
-        return populateDB();
+        return populateDB(progressCallback);
       }
+      progressCallback(1, 1);
       return Promise.resolve();
     });
 };

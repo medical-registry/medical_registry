@@ -14,9 +14,10 @@
           <v-progress-circular
             :size="150"
             :width="15"
+            :value="loadingPercent"
             color="blue lighten-5"
-            indeterminate
           >
+            {{loadingPercent}}%
           </v-progress-circular>
         </v-row>
       </v-layout>
@@ -51,18 +52,26 @@ export default {
   //     this.user = newValue;
   //   },
   // },
-  created() {
-    init()
+  mounted() {
+    init(this.updateLoadingPercent)
       .then(() => {
         this.dbReady = true;
       });
   },
   methods: {
+    updateLoadingPercent(total, items) {
+      this.totalEntries = total;
+      this.addedEntries += items;
+      console.log(`${Math.round(100 * (this.addedEntries / this.totalEntries))}%`);
+      this.loadingPercent = Math.round(100 * (items / total));
+    },
   },
   data: () => ({
     drawer: null,
     dbReady: false,
     loadingPercent: 0,
+    totalEntries: 1,
+    addedEntries: 1,
   }),
 };
 </script>

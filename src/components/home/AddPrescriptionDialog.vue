@@ -98,7 +98,7 @@
                   v-on="on"
                   :rules="[v => !!v || 'Aggiungi Data Diagnosi']"/>
               </template>
-              <v-date-picker v-model="from" @input="fromDialog = false"/>
+              <v-date-picker v-model="from" @input="fromDialog = false" locale="it"/>
             </v-menu>
             <v-menu
               v-model="toDialog"
@@ -116,7 +116,7 @@
                   v-bind="attrs"
                   v-on="on"/>
               </template>
-              <v-date-picker v-model="to" @input="toDialog = false"/>
+              <v-date-picker v-model="to" @input="toDialog = false" locale="it"/>
             </v-menu>
             <v-text-field
               v-model="dosage"
