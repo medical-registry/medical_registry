@@ -119,8 +119,6 @@ const model = {
   time: null,
   id_location: null,
   id_doctor: null,
-  contact: null,
-  contact_2: null,
   requisites: null,
   receipit_code: null,
   highlight: true,
