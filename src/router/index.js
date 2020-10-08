@@ -41,8 +41,6 @@ const routes = [
     path: '/diseases',
     name: 'Patologie',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Diseases.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -50,8 +48,6 @@ const routes = [
     path: '/allergies',
     name: 'Allergie',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Allergies.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -59,8 +55,6 @@ const routes = [
     path: '/family',
     name: 'Patologie Parenti',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Family.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -68,8 +62,6 @@ const routes = [
     path: '/traumas',
     name: 'Traumi',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Traumas.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -77,8 +69,6 @@ const routes = [
     path: '/interventions',
     name: 'Interventi',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Interventions.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -86,8 +76,6 @@ const routes = [
     path: '/hospitalizations',
     name: 'Ricoveri',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Hospitalizations.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -95,8 +83,6 @@ const routes = [
     path: '/medicines',
     name: 'Farmaci',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Medicines.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -104,8 +90,6 @@ const routes = [
     path: '/therapies',
     name: 'Terapie non Farmacologiche',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Therapies.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -113,8 +97,6 @@ const routes = [
     path: '/timeline',
     name: 'Cronologia',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Timeline.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -122,8 +104,6 @@ const routes = [
     path: '/notifications',
     name: 'Notifiche',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Notifications.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
@@ -131,8 +111,6 @@ const routes = [
     path: '/receipts',
     name: 'Ricevute & Fatture',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Receipts.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
