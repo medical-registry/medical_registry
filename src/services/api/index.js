@@ -1,64 +1,6 @@
 import db from '@/services/database';
 import { keyBy } from '@/services/util';
 
-// eslint-disable-next-line no-unused-vars
-const fetchUserExamsRegister = (userId) => Promise.resolve(
-  {
-    data: {
-      categories: [
-        {
-          examId: 9, category: 'SANGUE', name: 'ALDOSTERONE', sex: 'A',
-        },
-        {
-          examId: 26, category: 'SANGUE', name: 'ANTIGENE CARBOIDRATO 19-9', sex: 'A',
-        },
-        {
-          examId: 33, category: 'SANGUE', name: 'AZOTO UREICO EMATICO', sex: 'A',
-        },
-        {
-          examId: 42, category: 'SANGUE', name: 'CERUPLASMINA', sex: 'A',
-        },
-        {
-          examId: 45, category: 'SANGUE', name: 'CONCENTRAZIONE CORPUSCOLARE MEDIA DI EMOGLOBINA', sex: 'A',
-        },
-        {
-          examId: 57, category: 'SANGUE', name: 'CREATININEMIA', sex: 'A',
-        },
-        {
-          examId: 116, category: 'SANGUE', name: 'PROTEINA C', sex: 'A',
-        },
-        {
-          examId: 157, category: 'SANGUE', name: 'TRIGLICERIDI', sex: 'A',
-        },
-        {
-          examId: 182, category: 'URINE', name: 'URINOCOLTURA', sex: 'A',
-        },
-        {
-          examId: 187, category: 'URINE', name: 'DROGHE URINARIE', sex: 'A',
-        },
-        {
-          examId: 269, category: 'RADIOGRAFIA', name: 'CON CONTRASTO', sex: 'A',
-        },
-        {
-          examId: 270, category: 'RADIOGRAFIA', name: 'SENZA CONTRASTO', sex: 'A',
-        },
-        {
-          examId: 301, category: 'VISITA', name: 'GASTROENTEROLOGICA', sex: 'A',
-        },
-        {
-          examId: 304, category: 'VISITA', name: 'DERMATOLOGICA', sex: 'A',
-        },
-
-      ],
-    },
-  },
-);
-
-const fetchUserExamsCategories = async (userId) => {
-  fetchUserExamsRegister(userId)
-    .then((response) => [...new Set(response.data.categories.map((item) => item.cateogy))]);
-};
-
 const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
   db.register.where({ id: userId })
     .first((user) => {
@@ -195,8 +137,6 @@ const login = (email, password) => new Promise((resolve, reject) => {
 });
 
 export default {
-  fetchUserExamsRegister,
-  fetchUserExamsCategories,
   fetchPatientProfile,
   fetchPatientDiagnosis,
   fetchUserPrescriptions,

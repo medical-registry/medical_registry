@@ -27,16 +27,30 @@ const populateDB = (progressCallback) => {
     resolve({ totalRecords: records.length, grouped });
   })
     .then(({ totalRecords, grouped }) => {
-      const promises = [Promise.resolve().then(() => progressCallback(totalRecords, 0))];
+      setTimeout(() => progressCallback(totalRecords, 0), 10);
+      const promises = [];
       Object.entries(grouped).forEach(([table, entries]) => {
+        console.log(table);
         const schema = schemas[table];
         const objs = entries.map((record) => buildObject(schema, record));
+        const clearTable = db[table] ? db[table].clear() : Promise.resolve();
         promises.push(
-          db[table].bulkAdd(objs)
-            .then(() => progressCallback(totalRecords, entries.length)),
+          clearTable
+            .catch((e) => console.log(`error poplating ${table}: ${e.message}`))
+            .then(() => {
+              db[table].bulkAdd(objs);
+            })
+            .catch((e) => console.log(`error poplating ${table}: ${e.message}`))
+            .then(() => setTimeout(() => progressCallback(totalRecords, entries.length), 10)),
         );
       });
       return Promise.all(promises)
+        .then(() => {
+          if (db.metas) {
+            return db.metas.clear();
+          }
+          return Promise.resolve();
+        })
         .then(() => db.metas.add({ key: 'version', val: version }))
         .then(() => console.log('db population complete'));
     });
@@ -55,7 +69,7 @@ const init = (progressCallback) => {
       if (!o || o.val !== version) {
         return populateDB(progressCallback);
       }
-      progressCallback(1, 1);
+      setTimeout(() => progressCallback(1, 1), 10);
       return Promise.resolve();
     });
 };

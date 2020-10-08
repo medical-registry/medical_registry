@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 8,
   "defs": [
     {
       "table": "metas",
@@ -57,14 +57,19 @@
       "indexes": "&id"
     },
     {
-      "table": "exam_register",
-      "columns": ["id", "category", "name", "sex"],
-      "indexes": "&id"
-    },
-    {
       "table": "exams",
       "columns": ["id_person", "id_care", "name", "id_exam", "diagnostic_question", "note", "body_impacted", "from", "to", "time", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update", "requisites", "receipit_code", "highlight", "value", "unit"],
       "indexes": "++id_care,&[id_person+id_exam+time],id_person,id_exam,time"
+    },
+    {
+      "table": "exam_register",
+      "columns": ["id", "category", "name", "sex", "macro_category"],
+      "indexes": "++id,category,macro_category"
+    },
+    {
+      "table": "exemption_register",
+      "columns": ["country", "descr", "description_group", "exemption_description", "group_exemption", "id", "id_exemption", "region", "typology"],
+      "indexes": "&id"
     },
     {
       "table": "filepath",

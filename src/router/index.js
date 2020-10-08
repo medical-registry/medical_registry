@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import api from '@/services/api/index';
-// eslint-disable-next-line import/named
-import { Store } from '@/store/index';
+import { Store } from '@/store';
 import PatientHome from '@/views/PatientHome.vue';
 
 Vue.use(VueRouter);
@@ -29,10 +27,15 @@ const routes = [
     path: '/exams',
     name: 'Esami',
     icon: 'mdi-clipboard-text',
-    // eslint-disable-next-line no-return-await
-    fetchItems: async () => await api.fetchUserExamsCategories(),
     component: () => import('../views/Exams.vue'),
-    meta: { requiresLogin: true, drawer: true, groupHome: true },
+    meta: { requiresLogin: true, drawer: true },
+  },
+  {
+    path: '/lab_exams',
+    name: 'Esami Di Laboratorio',
+    icon: 'mdi-test-tube',
+    component: () => import('@/views/LabExam.vue'),
+    meta: { requiresLogin: true, drawer: true },
   },
   {
     path: '/about',

@@ -6,11 +6,8 @@
       <router-view/>
     </v-main>
     <v-main v-else>
-      <v-layout fill-height
-                fluid
-                class="blue darken-1">
-        <v-row align="center"
-               justify="center">
+      <v-layout fill-height fluid class="blue darken-1">
+        <v-row align="center" justify="center">
           <v-progress-circular
             :size="150"
             :width="15"
@@ -22,10 +19,7 @@
         </v-row>
       </v-layout>
     </v-main>
-    <v-footer
-      color="blue darken-3"
-      app
-    >
+    <v-footer color="blue darken-3" app>
       <span class="white--text">Medical Registry &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
@@ -47,11 +41,6 @@ export default {
     source: String,
   },
   computed: mapState(['user']),
-  // watch: {
-  //   user(newValue) {
-  //     this.user = newValue;
-  //   },
-  // },
   mounted() {
     init(this.updateLoadingPercent)
       .then(() => {
@@ -62,8 +51,7 @@ export default {
     updateLoadingPercent(total, items) {
       this.totalEntries = total;
       this.addedEntries += items;
-      console.log(`${Math.round(100 * (this.addedEntries / this.totalEntries))}%`);
-      this.loadingPercent = Math.round(100 * (items / total));
+      this.loadingPercent = Math.floor((100.0 * this.addedEntries) / this.totalEntries);
     },
   },
   data: () => ({
@@ -75,3 +63,11 @@ export default {
   }),
 };
 </script>
+<style lang="scss">
+.capitalized {
+  text-transform: capitalize;
+  input{
+    text-transform: capitalize!important;
+  }
+}
+</style>

@@ -188,11 +188,6 @@ export default {
   name: 'Home',
   // eslint-disable-next-line vue/no-unused-components
   components: { ActiveTimeline, ProfileField },
-  computed: {
-    user() {
-      return this.$store.user;
-    },
-  },
   data() {
     return {
       isMobile: false,
@@ -202,6 +197,7 @@ export default {
       error: null,
       fields,
       tab: null,
+      user: this.$store.state.user,
     };
   },
   created() {
@@ -210,7 +206,7 @@ export default {
   },
   methods: {
     fetchData() {
-      api.fetchPatientProfile()
+      api.fetchPatientProfile(this.user.id)
         .then((response) => {
           this.patientProfile = response.data;
           this.loading = false;

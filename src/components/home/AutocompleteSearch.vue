@@ -22,6 +22,7 @@ export default {
   props: {
     table: null,
     label: null,
+    initialValue: null,
     searchField: {
       type: String,
       default: 'name',
@@ -35,16 +36,18 @@ export default {
       required: false,
       default: false,
     },
+    filters: null,
   },
-  data: () => ({
-    valid: false,
-    dialog: false,
-    entries: [],
-    isLoading: false,
-    search: null,
-    model: null,
-  }),
-
+  data() {
+    return {
+      valid: this.initialValue !== undefined,
+      dialog: false,
+      entries: this.initialValue ? [this.initialValue] : [],
+      isLoading: false,
+      search: this.initialValue ? this.initialValue[this.searchField] : null,
+      model: this.initialValue ? { ...this.initialValue } : null,
+    };
+  },
   computed: {
     fields() {
       if (!this.model) return [];
@@ -58,29 +61,24 @@ export default {
     },
   },
   watch: {
-
-    search(val, oldValue) {
+    async search(val, oldValue) {
       if (val === oldValue || this.isLoading) return;
       if (val && val.length <= 2) {
         this.entries = [];
         this.count = 0;
         return;
       }
-      const regexp = new RegExp(`.*${val}.*`, 'gi');
+      const regexp = new RegExp(`${val}.*`, 'gi');
       const field = this.searchField;
       this.isLoading = true;
-      this.table
-        .filter((item) => regexp.test(item[field]))
-        .toArray()
-        .then((res) => {
-          this.count = res.length;
-          this.entries = res;
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        // eslint-disable-next-line no-return-assign
-        .finally(() => (this.isLoading = false));
+      const query = this.table.filter((item) => regexp.test(item[field]));
+      if (this.filters) {
+        this.filters.forEach((filterFunction) => query.filter((item) => filterFunction(item)));
+      }
+      const res = await query.toArray();
+      this.count = res.length;
+      this.entries = res;
+      this.isLoading = false;
     },
   },
 };

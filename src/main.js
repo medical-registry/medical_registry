@@ -8,6 +8,9 @@ import vuetify from '@/plugins/vuetify';
 import store from '@/store';
 import router from '@/router';
 import App from '@/App.vue';
+import moment from 'moment';
+
+moment.locale('it-it');
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
