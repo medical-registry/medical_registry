@@ -1,10 +1,11 @@
 <template>
-  <v-card>
+  <v-card elevation="0">
     <AddExamDialog
       v-if="units"
       :macro_category="macro_category"
       :category="category"
-      :units="units"/>
+      :units="units"
+      :addButtonAlign="timelineItems && timelineItems.length> 0 ? 'text-right' : 'text-center'"/>
     <v-container v-if="timelineItems && Object.keys(timelineItems).length>0">
       <v-timeline  align-top dense>
         <v-timeline-item v-for="group in timelineItems" :key="group.date" small>
@@ -42,11 +43,14 @@
                       :key="item.id_care"
                       :units="units"
                       :category="category"
+                      :macro_category="macro_category"
+                      v-on:delete="fetchExams"
                       :item="item"/>
                     <EditableExamValue
                       v-if="adding"
                       :units="units"
                       :category="category"
+                      :macro_category="macro_category"
                       :parent="group.values[0]"
                       v-on:update="handleNewItem"/>
                   </tbody>

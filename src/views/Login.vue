@@ -38,10 +38,7 @@ export default {
   },
   computed: mapState(['user']),
   watch: {
-    user(newValue, oldValue) {
-      console.log(`Updating from ${oldValue} to ${newValue}`);
-
-      // Do whatever makes sense now
+    user(newValue) {
       if (newValue && newValue.id) {
         switch (newValue.type) {
           case 'patient': this.$router.push({ path: '/patient_home' }); break;
@@ -51,15 +48,10 @@ export default {
     },
   },
   methods: {
-    patientLogin(email, password) {
-      api.login(email, password)
-        .then((user) => {
-          this.$store.commit('setUser', user);
-          this.$router.push({ path: '/patient_home' });
-        })
-        .catch((e) => {
-          console.log(e.message);
-        });
+    async patientLogin(email, password) {
+      const user = await api.login(email, password);
+      this.$store.commit('setUser', user);
+      await this.$router.push({ path: '/patient_home' });
     },
     doctorLogin() {
       console.log('patient login called');

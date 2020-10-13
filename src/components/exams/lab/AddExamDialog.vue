@@ -1,15 +1,11 @@
 <template>
   <v-dialog v-model="dialog" max-width="700px" persistent>
     <template v-slot:activator="{ on, attrs }">
-      <div class="my-5 light-blue--text">
-        <v-btn class="mx-2"
-               color="primary lighten-1"
-               dark
-               v-bind="attrs"
-               v-on="on">
+      <v-container :class="`my-0 mt-5 light-blue--text ${addButtonAlign}`">
+        <v-btn color="primary lighten-1" dark v-bind="attrs" v-on="on">
           Aggiungi Esame
         </v-btn>
-      </div>
+      </v-container>
     </template>
     <v-card>
       <v-card-title>Aggiungi Esame</v-card-title>
@@ -108,7 +104,7 @@
 <script>
 import moment from 'moment';
 import db from '@/services/database';
-import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 const model = {
   diagnostic_question: null,
@@ -134,6 +130,10 @@ export default {
     category: null,
     user_id: null,
     units: null,
+    addButtonAlign: {
+      type: String,
+      default: 'text-left',
+    },
   },
   computed: {
     dateRangeText() {
@@ -151,7 +151,6 @@ export default {
       return item.macro_category === this.macro_category && item.category === this.category;
     },
     handleSelection() {
-      console.log(this.dateRange);
       if (this.dateRange && this.dateRange.length > 0 && this.dateRange[0] === this.dateRange[1]) {
         this.dateRange = null;
         this.exam.from = null;

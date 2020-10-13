@@ -155,7 +155,7 @@
 import db from '@/services/database';
 import moment from 'moment';
 import { keyBy } from '@/services/util';
-import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 const reasons = [
   { name: 'Diagnosi', value: 'disease' },
@@ -269,7 +269,6 @@ export default {
       this.intervention = null;
     },
     save() {
-      console.log('saving');
       db.medicines.get({
         id_person: this.user.id,
         id_medicine: this.drug.id,

@@ -1,16 +1,17 @@
 <template>
-  <tr :class="exam.highlight ?'font-weight-bold':''" v-if="!editing">
-    <td class="text-capitalize">{{ (def ? def.name : '').toLowerCase() }}</td>
-    <td>{{ exam.value }}</td>
-    <td>{{ exam.unit }}</td>
-    <td class="text-right" colspan="2">
+  <tr :class="exam.highlight ?'font-weight-bold':''"
+      v-if="!editing" :key="exam.id_care">
+    <td class="text-capitalize py-5">{{ (def ? def.name : '').toLowerCase() }}</td>
+    <td class="py-20">{{ exam.value }}</td>
+    <td class="py-26">{{ exam.unit }}</td>
+    <td class="text-right py-5" colspan="2">
       <v-btn color="primary" fab x-small dark elevation="0" class="mr-2" @click="editing=true">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
       <v-btn color="teal" fab x-small dark elevation="0" class="mr-2">
         <v-icon>mdi-chart-line</v-icon>
       </v-btn>
-      <v-btn color="error" fab x-small dark elevation="0">
+      <v-btn color="error" fab x-small dark elevation="0" @click="deleteExam">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </td>
@@ -22,9 +23,10 @@
         label="Tipologia Esame"
         :required="true"
         :table="database.exam_register"
-        :filters="[(a) => a.category === category]"
+        :filters="[(a) => a.category === this.category]"
         v-on:change="updateExam"
         :initial-value="def"
+        :default-creation-values="{category, macro_category}"
       />
     </td>
     <td class="pa-0 px-2">
@@ -37,7 +39,10 @@
       <v-checkbox v-model="exam.highlight" label="Segnalato"/>
     </td>
     <td class="text-right">
-      <v-btn color="primary" fab x-small dark elevation="0" class="mr-0" @click="save()">
+      <v-btn color="error" fab x-small dark elevation="0" @click="editing = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+      <v-btn color="primary" fab x-small dark elevation="0" class="mr-0 ml-3" @click="save()">
         <v-icon>mdi-content-save</v-icon>
       </v-btn>
     </td>
@@ -47,7 +52,7 @@
 <script>
 import db from '@/services/database';
 import moment from 'moment';
-import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 export default {
   name: 'EditableExamValue',
@@ -57,8 +62,13 @@ export default {
     category: null,
     units: null,
     parent: null,
+    macro_category: null,
   },
   methods: {
+    async deleteExam() {
+      await this.database.exams.where({ id_care: this.exam.id_care }).delete();
+      this.$emit('delete');
+    },
     async save() {
       if (this.parent) {
         this.exam.creation = moment().format();
@@ -73,6 +83,7 @@ export default {
       this.$emit('update');
     },
     updateExam(def) {
+      if (!def) { return; }
       this.def = def;
       this.exam.id_exam = def.id;
       this.exam.name = def.name;

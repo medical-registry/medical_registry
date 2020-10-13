@@ -97,7 +97,7 @@
 <script>
 import moment from 'moment';
 import db from '@/services/database';
-import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 export default {
   name: 'AddDiseaseDialog',

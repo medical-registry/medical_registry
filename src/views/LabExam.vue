@@ -83,7 +83,6 @@ export default {
         name: category,
         key: category.toLowerCase().replace(' ', '_'),
       }));
-      console.log(this.tabs);
     },
   },
   data() {

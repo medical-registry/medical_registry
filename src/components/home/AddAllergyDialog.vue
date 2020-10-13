@@ -99,7 +99,7 @@
 <script>
 import db from '@/services/database';
 import moment from 'moment';
-import AutocompleteSearch from '@/components/home/AutocompleteSearch.vue';
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 export default {
   name: 'AddAllergyDialog',
