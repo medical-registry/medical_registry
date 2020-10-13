@@ -72,12 +72,14 @@
             </v-menu>
           </v-row>
           <AutocompleteSearch
-            invalid-hint="Seleziona Farmaco"
+            invalid-hint="Seleziona Esame"
             label="Tipologia Esame"
             :required="true"
             :table="database.exam_register"
-            :filters="[filterExamsByCategory]"
-            v-on:change="exam.def = $event"/>
+            :filters="[(a) => a.category === this.category]"
+            v-on:change="exam.def = $event"
+            :default-creation-values="{category, macro_category}"
+          />
           <v-row style="padding: 0 35px;">
             <v-col md4 class="py-0">
               <v-text-field md4 label="Valore" v-model="exam.value" type="number"/>

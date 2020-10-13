@@ -7,6 +7,7 @@
       <v-form v-model="valid" lazy-validation>
         <CustomExamForm ref= "activeForm"
                         v-if="tableName === 'exam_register'"
+                        :passed-text="searchText"
                         v-on:change="updateModel"/>
         <CustomExamForm ref= "activeForm"
                         v-else-if="tableName === 'exam'"

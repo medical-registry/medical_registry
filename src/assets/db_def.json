@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "defs": [
     {
       "table": "metas",
@@ -13,7 +13,7 @@
     },
     {
       "table": "allergies",
-      "columns": ["id_person", "id_care", "name", "id_allergy", "severity", "intolerance", "from", "to", "note", "creation", "update"],
+      "columns": ["id_person", "id_care", "id_allergy", "severity", "intolerance", "from", "to", "note", "creation", "update"],
       "indexes": "++id_care,&[id_person+id_allergy+from],id_person,id_allergy"
     },
     {
@@ -43,12 +43,12 @@
     },
     {
       "table": "diseases",
-      "columns": ["id_person", "id_care", "name", "id_disease", "chronic", "note", "body_impacted", "from", "to", "medical_exemption", "medical_exemption_code", "creation", "update"],
+      "columns": ["id_person", "id_care", "id_disease", "chronic", "note", "body_impacted", "from", "to", "medical_exemption", "medical_exemption_code", "creation", "update"],
       "indexes": "++id_care,&[id_person+id_disease+from],id_person,id_disease"
     },
     {
       "table": "diseases_parental",
-      "columns": ["id_person", "id_care", "name", "id_disease", "chronic", "note", "body_impacted", "from", "to", "discovered_at_age", "parent_type", "creation", "update"],
+      "columns": ["id_person", "id_care", "id_disease", "chronic", "note", "body_impacted", "from", "to", "discovered_at_age", "parent_type", "creation", "update"],
       "indexes": "++id_care,&[id_person+id_disease+from],id_person,id_disease,parent_type"
     },
     {
@@ -58,7 +58,7 @@
     },
     {
       "table": "exams",
-      "columns": ["id_person", "id_care", "name", "id_exam", "diagnostic_question", "note", "body_impacted", "from", "to", "time", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update", "requisites", "receipit_code", "highlight", "value", "unit"],
+      "columns": ["id_person", "id_care", "id_exam", "diagnostic_question", "note", "body_impacted", "from", "to", "time", "id_location", "id_doctor", "creation", "update", "requisites", "receipit_code", "highlight", "value", "unit"],
       "indexes": "++id_care,&[id_person+id_exam+time],id_person,id_exam,time"
     },
     {

@@ -10,10 +10,19 @@
 const defaultRecord = { name: null, sex: 'A' };
 export default {
   name: 'CustomExamForm',
+  props: {
+    passedText: null,
+  },
   methods: {
     reset() {
       this.record = { ...defaultRecord };
     },
+  },
+  mounted() {
+    if (this.passedText && this.passedText.trim().length > 0) {
+      this.record.name = this.passedText;
+      this.$emit('change', this.record);
+    }
   },
   data() {
     return {
