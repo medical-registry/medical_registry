@@ -2,54 +2,55 @@
 
     <v-card elevation="0">
       <v-card-title>Patologie </v-card-title>
-      <v-timeline  align-top dense>
-        <v-timeline-item v-for="item in items" :key="item.id_care" small>
-          <v-card class="elevation-3">
-            <v-card-title class="text-center">{{item.disease.name}}
-                ({{item.chronic}})
-            </v-card-title>
-            <v-card-title v-if="!item.to" class="headline capitalized">{{formatDate(item.from)}}
-            </v-card-title>
-            <v-card-title v-else class="headline capitalized">Dal {{formatDate(item.from)}}
-              al {{formatDate(item.to)}}
-            </v-card-title>
-            <v-card-text>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
+      <v-container>
+        <v-timeline  align-top dense>
+          <v-timeline-item v-for="item in items" :key="item.id_care" small>
+            <v-card class="elevation-3">
+              <v-card-title class="text-center">{{item.disease.name}}
+                  ({{item.chronic}})
+              </v-card-title>
+              <v-card-title v-if="!item.to" class="headline capitalized">{{formatDate(item.from)}}
+              </v-card-title>
+              <v-card-title v-else class="headline capitalized">Dal {{formatDate(item.from)}}
+                al {{formatDate(item.to)}}
+              </v-card-title>
+              <v-card-text>
+                  <v-simple-table>
+                    <template v-slot:default>
+                      <thead>
+                            <tr>
+                              <th v-if="item.body_impacted != null" class="text-left">
+                                  Parte del Corpo</th>
+                              <th v-if="item.note != null" class="text-left">Note</th>
+                              <th v-if="item.medical_exemption != null" class="text-left">
+                                  Esenzione Medica</th>
+                              <th v-if="item.medical_exemption_code != null" class="text-left">
+                                  Codice Esenzione</th>
+                              <th colspan="2"/>
+                            </tr>
+                      </thead>
+                      <tbody>
                           <tr>
-                            <th v-if="item.body_impacted != null" class="text-left">
-                                Parte del Corpo</th>
-                            <th v-if="item.note != null" class="text-left">Note</th>
-                            <th v-if="item.medical_exemption != null" class="text-left">
-                                Esenzione Medica</th>
-                            <th v-if="item.medical_exemption_code != null" class="text-left">
-                                Codice Esenzione</th>
-                            <th colspan="2"/>
+                          <td v-if="item.body_impacted != null">{{item.body_impacted}}</td>
+                          <td v-if="item.note != null">{{item.note}}</td>
+                          <td v-if="item.medical_exemption != null">{{item.medical_exemption}}</td>
+                          <td v-if="item.medical_exemption_code != null">
+                              {{item.medical_exemption_code}}</td>
+                          <td colspan="4"/>
                           </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td v-if="item.body_impacted != null">{{item.body_impacted}}</td>
-                        <td v-if="item.note != null">{{item.note}}</td>
-                        <td v-if="item.medical_exemption != null">{{item.medical_exemption}}</td>
-                        <td v-if="item.medical_exemption_code != null">
-                            {{item.medical_exemption_code}}</td>
-                        <td colspan="4"/>
-                        </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-            </v-card-text>
-          </v-card>
-        </v-timeline-item>
-      </v-timeline>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+              </v-card-text>
+            </v-card>
+          </v-timeline-item>
+        </v-timeline>
         <AutocompleteSearch
             invalid-hint="Seleziona Patologia"
             label="Patologia"
             :table="database.disease_register"
         />
-
+      </v-container>
     </v-card>
 
 </template>
