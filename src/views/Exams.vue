@@ -1,3 +1,3 @@
 <template>
-  <span>Ricoveri</span>
+  <span>Esami</span>
 </template>

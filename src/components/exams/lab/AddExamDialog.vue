@@ -15,7 +15,14 @@
             prepend-icon="mdi-help-circle-outline"
             v-model="exam.diagnostic_question"
             label="Quesito Diagnostico"
-            :rules="[v => !!v && v.length > 0 || 'Inserisci Quesito Diagnostico']"/>
+            :rules="[v => !!v && v.length > 0 || 'Inserisci Quesito Diagnostico']"
+            required/>
+          <v-text-field
+            prepend-icon="mdi-clipboard-check-multiple-outline"
+            v-model="exam.requisites"
+            hint="Esempio: Digiuno"
+            label="Requisiti"/>
+          <v-checkbox v-model="interval" label="Intervallo"/>
           <v-row class="px-3">
             <v-menu md10 xl10
               v-model="dateDialog"
@@ -27,9 +34,9 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     class="capitalized"
-                    :value="dateRangeText"
+                    :value="interval? dateRangeText: singleDateText"
                     label="Date"
-                    hint="Data o intervallo di date in cui l'esame é stato eseguito"
+                    hint="Data o intervallo in cui l'esame é stato eseguito"
                     prepend-icon="event"
                     readonly
                     v-bind="attrs"
@@ -37,12 +44,18 @@
                     :rules="[v => !!v && v.length > 0 || 'Data']"/>
                 </template>
                 <v-date-picker
+                  v-if="interval"
                   :min="dateRange && dateRange[0]"
                   range
                   no-title
                   v-model="dateRange"
                   @change="handleSelection"
                   locale="it-it"/>
+              <v-date-picker
+                v-else
+                no-title
+                v-model="exam.from"
+                locale="it-it"/>
             </v-menu>
             <v-menu v-if="dateRange && dateRange.length === 1" md2 xl2
               ref="menu"
@@ -56,7 +69,7 @@
                 <v-text-field
                   v-model="exam.time"
                   label="Ora"
-                  hint="Ore a cui é stato eseguto l'esame"
+                  hint="Ore a cui é stato eseguito l'esame"
                   prepend-icon="mdi-clock-time-four-outline"
                   readonly
                   v-bind="attrs"
@@ -71,26 +84,6 @@
                 @click:minute="$refs.menu.save(exam.time)"/>
             </v-menu>
           </v-row>
-          <AutocompleteSearch
-            invalid-hint="Seleziona Esame"
-            label="Tipologia Esame"
-            :required="true"
-            :table="database.exam_register"
-            :filters="[(a) => a.category === this.category]"
-            v-on:change="exam.def = $event"
-            :default-creation-values="{category, macro_category}"
-          />
-          <v-row style="padding: 0 35px;">
-            <v-col md4 class="py-0">
-              <v-text-field md4 label="Valore" v-model="exam.value" type="number"/>
-            </v-col>
-            <v-col md4 class="py-0">
-              <v-select md4 :items="units" v-model="exam.unit" label="Unità Di Misura"/>
-            </v-col>
-            <v-col md4 class="py-0">
-              <v-checkbox md4 v-model="exam.highlight" label="Segnalato"/>
-            </v-col>
-          </v-row>
           <v-textarea
             class="mt-5"
             outlined
@@ -99,6 +92,15 @@
             v-model="exam.note"/>
         </v-form>
       </v-card-text>
+      <v-card-actions class="px-5 pb-5">
+        <v-btn color="error" @click="dialog = false">
+          Annulla
+        </v-btn>
+        <v-spacer/>
+        <v-btn color="primary" @click="save" :disabled="valid">
+          Salva
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -106,7 +108,6 @@
 <script>
 import moment from 'moment';
 import db from '@/services/database';
-import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 const model = {
   diagnostic_question: null,
@@ -119,14 +120,10 @@ const model = {
   id_doctor: null,
   requisites: null,
   receipit_code: null,
-  highlight: true,
-  value: null,
-  unit: null,
 };
 
 export default {
   name: 'AddExamDialog',
-  components: { AutocompleteSearch },
   props: {
     macro_category: null,
     category: null,
@@ -139,7 +136,7 @@ export default {
   },
   computed: {
     dateRangeText() {
-      if (this.dateRange && this.dateRange.length === 1) {
+      if (this.dateRange && this.dateRange.type === String) {
         return moment(this.dateRange[0]).format('LL');
       }
       if (this.dateRange && this.dateRange.length === 2) {
@@ -147,11 +144,14 @@ export default {
       }
       return '';
     },
+    singleDateText() {
+      if (this.exam.from) {
+        return moment(this.dateRange[0]).format('LL');
+      }
+      return '';
+    },
   },
   methods: {
-    filterExamsByCategory(item) {
-      return item.macro_category === this.macro_category && item.category === this.category;
-    },
     handleSelection() {
       if (this.dateRange && this.dateRange.length > 0 && this.dateRange[0] === this.dateRange[1]) {
         this.dateRange = null;
@@ -163,6 +163,20 @@ export default {
       this.exam.from = from;
       this.exam.to = to;
     },
+    reset() {
+      this.dialog = false;
+      this.dateDialog = false;
+      this.dateRange = null;
+      this.timePicker = false;
+      this.valid = false;
+      this.exam = { ...model, id_person: this.user_id };
+    },
+    async save() {
+      const id = await this.database.exams.put(this.exam);
+      const res = await this.database.exams.get(id);
+      this.$emit('created', res);
+      this.reset();
+    },
   },
   data() {
     return {
@@ -172,6 +186,7 @@ export default {
       valid: false,
       dateDialog: false,
       dateRange: null,
+      interval: false,
       exam: { ...model, id_person: this.user_id },
     };
   },

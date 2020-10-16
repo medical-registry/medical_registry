@@ -9,11 +9,9 @@
         md12
         outlined
         hide-slider
-        active-class="active-lab-exam-tab"
-      >
+        active-class="active-lab-exam-tab">
         <v-tab
           :append="true"
-
           v-for="tab in tabs"
           :key="tab.key"
           :href="`#t-${tab.key}`">
@@ -22,9 +20,7 @@
       </v-tabs>
     </v-toolbar>
     <v-tabs-items v-model="tab">
-      <v-tab-item
-        v-for="tab in tabs" :key="tab.key"  :value="`t-${tab.key}`"
-      >
+      <v-tab-item v-for="tab in tabs" :key="tab.key"  :value="`t-${tab.key}`">
         <LabExamCard
           :user-id="user.id"
           :category="tab.category"
@@ -35,7 +31,6 @@
 </template>
 
 <script>
-import db from '@/services/database';
 import LabExamCard from '@/components/exams/lab/LabExamCard.vue';
 
 const labExamsTabs = [
@@ -48,19 +43,18 @@ const labExamsTabs = [
   {
     name: 'Urine',
     key: 'urine',
-    category: 'SANGUE',
+    category: 'URINE',
     macro_category: 'LABORATORIO',
   },
   {
     name: 'Feci',
     key: 'fecis',
-    category: 'SANGUE',
+    category: 'FECI',
     macro_category: 'LABORATORIO',
   },
   {
     name: 'Test',
     key: 'tests',
-    category: 'SANGUE',
     macro_category: 'LABORATORIO ALTRO',
   },
 ];
@@ -68,26 +62,9 @@ const labExamsTabs = [
 export default {
   name: 'LabExam',
   components: { LabExamCard },
-  created() {
-    this.fetchCategories();
-  },
-  methods: {
-    async fetchCategories() {
-      const res = await db.exam_register
-        .orderBy('category')
-        .filter((item) => item.macro_category === 'LABORATORIO')
-        .uniqueKeys();
-      this.tabs = res.map((category) => ({
-        category,
-        macro_category: 'LABORATORIO',
-        name: category,
-        key: category.toLowerCase().replace(' ', '_'),
-      }));
-    },
-  },
   data() {
     return {
-      tabs: null,
+      tabs: labExamsTabs,
       tab: `t-${labExamsTabs[0].key}`,
       user: this.$store.state.user,
     };
