@@ -1,3 +1,3 @@
 <template>
-  <span>Ricevute & Fatture</span>
+  <span>Ricette</span>
 </template>

@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 22,
   "defs": [
     {
       "table": "metas",
@@ -118,7 +118,7 @@
     },
     {
       "table": "register",
-      "columns": ["id", "code", "name", "surname", "birthdate", "sex", "address", "city", "zip_code", "country", "country_mother", "country_father", "urgent_info", "telephone_1", "telephone_2", "email", "particular_signs", "blood_group", "peso", "altezza"],
+      "columns": ["id", "code", "name", "surname", "birthdate", "sex", "address", "city", "zip_code", "country", "country_mother", "country_father", "urgent_info", "telephone_1", "telephone_2", "email", "particular_signs", "blood_group", "peso", "altezza","id_doctor"],
       "indexes": "&id"
     },
     {
@@ -140,6 +140,12 @@
       "table": "traumas",
       "columns": ["id_person", "id_trauma", "name", "severity", "description", "body_impacted", "from", "to", "time", "note", "creation", "update"],
       "indexes": "&[id_person+id_trauma+from],id_person,id_trauma,from"
+    }
+    ,
+    {
+      "table": "exemption_register",
+      "columns": ["id", "country", "region", "typology", "group_exemption", "id_exemption", "exemption_description"],
+      "indexes": "&id"
     }
   ]
 }

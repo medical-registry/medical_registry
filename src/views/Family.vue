@@ -18,7 +18,7 @@
                   <template v-slot:default>
                    <thead>
                           <tr>
-                            <th v-if="item.parental_type != null" class="text-left">
+                            <th v-if="item.parent_type != null" class="text-left">
                               Grado di Parentela</th>
                             <th v-if="item.body_impacted != null" class="text-left">
                               Parte del corpo</th>
@@ -30,8 +30,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                        <td v-if="item.parental_type != null" class="text-left">
-                          {{item.parental_type}}</td>
+                        <td v-if="item.parent_type != null" class="text-left">
+                          {{item.parent_type}}</td>
                 <td v-if="item.body_impacted != null" class="text-left">{{item.body_impacted}}</td>
                         <td v-if="item.discovered_at_age != null" class="text-left">
                             {{item.discovered_at_age}}</td>

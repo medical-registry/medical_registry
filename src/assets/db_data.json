@@ -2612,8 +2612,9 @@
         ["diseases", 1, 1, 225, true, "molto doloroso", null, "2020-07-13", "", null, null, "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
         ["diseases", 1, 2, 346, true, null, "esofago e stomaco", "2018-06-12", "", null, null, "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
         ["diseases", 1, 3, 27, false, null, null, "2019-04-12", "2019-04-14", null, null, "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
-        ["diseases", 1, 4, 180, false, null, null, "2009-02-03", "2009-02-28", null, null, "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
+        ["diseases", 1, 4, 180, false, null, null, "2009-02-03", "2009-02-28", null, "025.272.0", "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
         ["diseases_parental", 1, 1, 346, true, "bruciori di stomaco notturni intensi", null, "1980", "", 30, "Mamma", "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
+        ["doctor_register", 1, "Mario", "Rossi", "Virologo", 1, null, null, null],
         ["exam_register", 1, "SANGUE", "5 - NUCLEOTIDASI", "A", "LABORATORIO"],
         ["exam_register", 2, "SANGUE", "ACIDO FOLICO", "A", "LABORATORIO"],
         ["exam_register", 3, "SANGUE", "ACIDO LATTICO", "A", "LABORATORIO"],
@@ -20753,6 +20754,7 @@
         ["therapy_register", 34, "LIMITARE CARNE ROSSA", "DIETA"],
         ["therapy_register", 35, "LIMITARE LATTICINI", "DIETA"],
         ["therapy_register", 36, "LIMITARE SALE", "DIETA"],
-        ["traumas", 1, 1, "TRAUMA CRANICO", "MEDIO", "Breve perdita di conoscenza. No Amnesia, No Vomito", "Testa", "2016-01-04", null, "mattina", "Controllo dopo un mese. Edema Interno assorbito", "2020-09-09 13:00:51.000000", "2020-09-09 13:00:51.000000"]
+        ["traumas", 1, 1, "TRAUMA CRANICO", "MEDIO", "Breve perdita di conoscenza. No Amnesia, No Vomito", "Testa", "2016-01-04", null, "mattina", "Controllo dopo un mese. Edema Interno assorbito", "2020-09-09 13:00:51.000000", "2020-09-09 13:00:51.000000"],
+        ["exemption_register", 1, "IT", "LOMBARDIA", "99", "PATOLOGIA", "25", "IPERCOLESTEROLEMIA, IPERLIPIDEMIA","025.272.0","IPERCOLESTEROLEMIA PURA"]
       ]
 }

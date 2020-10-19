@@ -115,6 +115,13 @@ const routes = [
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
   {
+    path: '/fiscal',
+    name: 'Ricevute',
+    icon: 'mdi-receipt',
+    component: () => import('../views/Fiscal.vue'),
+    meta: { requiresLogin: true, drawer: true, groupHome: true },
+  },
+  {
     path: '/about',
     name: 'About',
     icon: 'mdi-information-variant',
