@@ -115,7 +115,7 @@
             v-on:change="setExamId"
             :default-creation-values="{category, macro_category}"/>
           <v-row>
-            <v-col>
+            <v-col class="pa-0 px-2">
               <v-checkbox v-model="exam.highlight" label="Segnalato"/>
             </v-col>
             <v-col class="pa-0 px-2">

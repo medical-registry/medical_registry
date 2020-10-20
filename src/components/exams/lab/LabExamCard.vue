@@ -123,11 +123,10 @@ export default {
           exam: keyedExamDefinitions[item.id_exam],
           highlight: item.highlight === 1 || item.highlight === '1' || item.highlight === true,
         };
-        const key = `${modItem.from}${modItem.to ? (`-${modItem.to}`) : ''}`;
-        if (!examsGroups[key]) {
+        if (!examsGroups[modItem.from]) {
           examsGroups[modItem.from] = [];
         }
-        examsGroups[key].push(modItem);
+        examsGroups[modItem.from].push(modItem);
       });
       const res = [];
       Object.keys(examsGroups)
