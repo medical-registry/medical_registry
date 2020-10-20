@@ -12,6 +12,7 @@
               al {{formatDate(item.to)}}
             </v-card-title>
             <v-card-text>
+                {{item}}
                 <v-simple-table>
                   <template v-slot:default>
                     <thead>
@@ -23,8 +24,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                        <td v-if="item.trauma.name != null">{{item.trauma.name}}</td>
-                        <td v-else>{{item.disease_register.name}}</td>
+                        <td v-if="item.trauma">{{item.trauma.name}}</td>
+                        <td v-if="item.disease">{{item.disease.diseaseRegister.name}}</td>
                         <td v-if="item.note != null">{{item.note}}</td>
                         <td colspan="4"/>
                         </tr>
@@ -68,17 +69,19 @@ export default {
       const userDiseases = await db.diseases
         .where({ id_person: this.$store.state.user.id }).toArray();
       const diseaseIds = [...new Set(userDiseases.map((item) => item.id_disease))];
-      const keyedDiseaseDefinitions = keyBy(userDiseases, 'id_disease');
+      const keyedDiseaseDefinitions = keyBy(userDiseases, 'id_care');
       const diseaseRegister = await db.disease_register.bulkGet(diseaseIds);
       const keyedDiseaseRegisterDefinitions = keyBy(diseaseRegister, 'id');
-
+      userDiseases.map((item) => ({
+        ...item,
+        diseaseRegister:
+        keyedDiseaseRegisterDefinitions[item.id_disease],
+      }));
       this.items = userIntervention.map((item) => ({
         ...item,
         intervention: keyedInterventionDefinitions[item.id_intervention],
         trauma: keyedTraumaDefinitions[item.id_trauma],
         disease: keyedDiseaseDefinitions[item.id_disease],
-        disease_register: keyedDiseaseRegisterDefinitions[item.disease],
-
       }));
     },
   },
