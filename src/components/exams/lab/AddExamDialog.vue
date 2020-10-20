@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="700px" persistent>
+  <v-dialog v-model="dialog" max-width="800px" persistent>
     <template v-slot:activator="{ on, attrs }">
       <v-container :class="`my-0 mt-5 light-blue--text ${addButtonAlign}`">
         <v-btn color="primary lighten-1" dark v-bind="attrs" v-on="on">
@@ -22,67 +22,111 @@
             v-model="exam.requisites"
             hint="Esempio: Digiuno"
             label="Requisiti"/>
-          <v-checkbox v-model="interval" label="Intervallo"/>
-          <v-row class="px-3">
-            <v-menu md10 xl10
-              v-model="dateDialog"
-              :close-on-content-click="false"
-              :nudge-right="30"
-              transition="scale-transition"
-              min-width="290px"
-              offset-y>
+          <v-row>
+            <v-col md="2">
+              <v-checkbox v-model="interval" label="Intervallo" @change="resetDates()"/>
+            </v-col>
+            <v-col v-if="interval" md="10">
+              <v-menu md10 xl10 v-model="dateDialog"
+                      :close-on-content-click="false"
+                      :nudge-right="30"
+                      transition="scale-transition"
+                      min-width="290px"
+                      offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    class="capitalized"
-                    :value="interval? dateRangeText: singleDateText"
+                  <v-text-field class="capitalized"
+                    :value="dateRangeText"
                     label="Date"
-                    hint="Data o intervallo in cui l'esame é stato eseguito"
+                    hint="Intervallo di date in cui l'esame é stato eseguito"
                     prepend-icon="event"
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    :rules="[v => !!v && v.length > 0 || 'Data']"/>
+                    :rules="[v => interval && !!v || 'Seleziona intervallo']"/>
                 </template>
                 <v-date-picker
-                  v-if="interval"
                   :min="dateRange && dateRange[0]"
                   range
                   no-title
                   v-model="dateRange"
                   @change="handleSelection"
                   locale="it-it"/>
-              <v-date-picker
-                v-else
-                no-title
-                v-model="exam.from"
-                locale="it-it"/>
-            </v-menu>
-            <v-menu v-if="dateRange && dateRange.length === 1" md2 xl2
-              ref="menu"
-              v-model="timePicker"
-              :close-on-content-click="false"
-              :nudge-right="30"
-              :return-value.sync="timePicker"
-              transition="scale-transition"
-              offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
+              </v-menu>
+            </v-col>
+            <v-col v-if="!interval" md="7">
+              <v-menu
+                v-model="singleDateDialog"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field class="capitalized"
+                    :value="singleDateText"
+                    label="Data"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    :rules="[v => !interval && !!v || 'Seleziona Data']"/>
+                </template>
+                <v-date-picker
+                  v-model="singleDate"
+                  no-title
+                  @change="handleSelection"
+                  locale="it-it"/>
+              </v-menu>
+            </v-col>
+            <v-col md="3" v-if="!interval">
+              <v-menu ref="menu"
+                      v-model="timePicker"
+                      :close-on-content-click="false"
+                      :nudge-right="30"
+                      :return-value.sync="timePicker"
+                      transition="scale-transition"
+                      offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="exam.time"
+                    label="Ora"
+                    hint="Ore a cui é stato eseguito l'esame"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"/>
+                </template>
+                <v-time-picker
+                  v-if="timePicker"
                   v-model="exam.time"
-                  label="Ora"
-                  hint="Ore a cui é stato eseguito l'esame"
-                  prepend-icon="mdi-clock-time-four-outline"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"/>
-              </template>
-              <v-time-picker
-                v-if="timePicker"
-                v-model="exam.time"
-                full-width
-                format="24hr"
-                no-title
-                @click:minute="$refs.menu.save(exam.time)"/>
-            </v-menu>
+                  full-width
+                  format="24hr"
+                  no-title
+                  @click:minute="$refs.menu.save(exam.time)"/>
+              </v-menu>
+            </v-col>
+          </v-row>
+          <AutocompleteSearch
+            invalid-hint="Seleziona Esame"
+            label="Tipologia Esame"
+            :required="true"
+            :table="database.exam_register"
+            :filters="[(a) => a.category === this.category]"
+            v-on:change="setExamId"
+            :default-creation-values="{category, macro_category}"/>
+          <v-row>
+            <v-col>
+              <v-checkbox v-model="exam.highlight" label="Segnalato"/>
+            </v-col>
+            <v-col class="pa-0 px-2">
+              <v-text-field label="Valore" v-model="exam.value" type="number"
+                            :rules="[v => !!v || 'Aggiungi Valore']"/>
+            </v-col>
+            <v-col class="pa-0 px-2">
+              <v-select :items="units" v-model="exam.unit"
+                        label="Unità Di Misura"
+                        :rules="[v => !!v || 'Aggiungi Unità Di Misura']"/>
+            </v-col>
           </v-row>
           <v-textarea
             class="mt-5"
@@ -97,7 +141,7 @@
           Annulla
         </v-btn>
         <v-spacer/>
-        <v-btn color="primary" @click="save" :disabled="valid">
+        <v-btn color="primary" @click="save" :disabled="!valid">
           Salva
         </v-btn>
       </v-card-actions>
@@ -108,6 +152,7 @@
 <script>
 import moment from 'moment';
 import db from '@/services/database';
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 const model = {
   diagnostic_question: null,
@@ -115,6 +160,7 @@ const model = {
   body_impacted: null,
   from: null,
   to: null,
+  id_exam: null,
   time: null,
   id_location: null,
   id_doctor: null,
@@ -124,6 +170,7 @@ const model = {
 
 export default {
   name: 'AddExamDialog',
+  components: { AutocompleteSearch },
   props: {
     macro_category: null,
     category: null,
@@ -136,32 +183,46 @@ export default {
   },
   computed: {
     dateRangeText() {
-      if (this.dateRange && this.dateRange.type === String) {
-        return moment(this.dateRange[0]).format('LL');
+      if (!this.dateRange || this.dateRange.length < 2) {
+        return null;
       }
-      if (this.dateRange && this.dateRange.length === 2) {
-        return `Dal ${moment(this.dateRange[0]).format('LL')} Al ${moment(this.dateRange[1]).format('LL')}`;
-      }
-      return '';
+      const [from, to] = this.dateRange;
+      return `Dal ${moment(from).format('LL')} Al ${moment(to).format('LL')}`;
     },
     singleDateText() {
-      if (this.exam.from) {
-        return moment(this.dateRange[0]).format('LL');
+      if (!this.singleDate) {
+        return null;
       }
-      return '';
+      return moment(this.singleDate).format('LL');
     },
   },
   methods: {
-    handleSelection() {
-      if (this.dateRange && this.dateRange.length > 0 && this.dateRange[0] === this.dateRange[1]) {
-        this.dateRange = null;
-        this.exam.from = null;
-        this.exam.to = null;
-        return;
+    setExamId(value) {
+      if (value) {
+        this.exam.id_exam = value.id;
       }
-      const [from, to] = this.dateRange;
-      this.exam.from = from;
-      this.exam.to = to;
+    },
+    resetDates() {
+      this.dateDialog = false;
+      this.timePicker = false;
+      this.singleDateDialog = false;
+      this.exam.from = null;
+      this.exam.to = null;
+      this.exam.time = null;
+      this.dateRange = null;
+      this.singleDate = null;
+    },
+    handleSelection() {
+      if (this.interval) {
+        this.dateDialog = false;
+        const [from, to] = this.dateRange;
+        this.exam.from = from;
+        this.exam.to = to;
+      } else {
+        this.singleDateDialog = false;
+        this.exam.from = this.singleDate;
+        this.exam.to = null;
+      }
     },
     reset() {
       this.dialog = false;
@@ -187,6 +248,8 @@ export default {
       dateDialog: false,
       dateRange: null,
       interval: false,
+      singleDateDialog: false,
+      singleDate: null,
       exam: { ...model, id_person: this.user_id },
     };
   },

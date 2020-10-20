@@ -5,6 +5,8 @@
       :macro_category="macro_category"
       :category="category"
       :units="units"
+      :user_id="userId"
+      v-on:created="fetchExams"
       :addButtonAlign="timelineItems && timelineItems.length> 0 ? 'text-right' : 'text-center'"/>
     <v-container v-if="timelineItems && Object.keys(timelineItems).length>0">
       <v-timeline  align-top dense>
@@ -121,10 +123,11 @@ export default {
           exam: keyedExamDefinitions[item.id_exam],
           highlight: item.highlight === 1 || item.highlight === '1' || item.highlight === true,
         };
-        if (!examsGroups[modItem.from]) {
+        const key = `${modItem.from}${modItem.to ? (`-${modItem.to}`) : ''}`;
+        if (!examsGroups[key]) {
           examsGroups[modItem.from] = [];
         }
-        examsGroups[modItem.from].push(modItem);
+        examsGroups[key].push(modItem);
       });
       const res = [];
       Object.keys(examsGroups)
