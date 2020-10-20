@@ -5,6 +5,8 @@
       :macro_category="macro_category"
       :category="category"
       :units="units"
+      :user_id="userId"
+      v-on:created="fetchExams"
       :addButtonAlign="timelineItems && timelineItems.length> 0 ? 'text-right' : 'text-center'"/>
     <v-container v-if="timelineItems && Object.keys(timelineItems).length>0">
       <v-timeline  align-top dense>
