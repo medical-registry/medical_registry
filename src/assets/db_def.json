@@ -18,7 +18,7 @@
     },
     {
       "table": "allergy_register",
-      "columns": ["id", "name", "category"],
+      "columns": ["id", "name", "category","id_person"],
       "indexes": "&id,name"
     },
     {
@@ -38,7 +38,7 @@
     },
     {
       "table": "disease_register",
-      "columns": ["id", "category", "name", "sex"],
+      "columns": ["id", "category", "name", "sex","id_person"],
       "indexes": "&id"
     },
     {
@@ -63,7 +63,7 @@
     },
     {
       "table": "exam_register",
-      "columns": ["id", "category", "name", "sex", "macro_category"],
+      "columns": ["id", "category", "name", "sex", "macro_category","id_person"],
       "indexes": "++id,category,macro_category"
     },
     {
@@ -83,7 +83,7 @@
     },
     {
       "table": "intervention_register",
-      "columns": ["id", "category", "name", "sex"],
+      "columns": ["id", "category", "name", "sex","id_person"],
       "indexes": "&id"
     },
     {
@@ -98,7 +98,7 @@
     },
     {
       "table": "medicine_register",
-      "columns": ["id", "equivalent", "active_principle", "name", "aic_code", "code", "category"],
+      "columns": ["id", "equivalent", "active_principle", "name", "aic_code", "code", "category","id_person"],
       "indexes": "&id,name"
     },
     {
@@ -133,7 +133,7 @@
     },
     {
       "table": "therapy_register",
-      "columns": ["id", "name", "category"],
+      "columns": ["id", "name", "category","id_person"],
       "indexes": "&id,name"
     },
     {
