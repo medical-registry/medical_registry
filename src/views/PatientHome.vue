@@ -54,7 +54,8 @@
                        cols="12"
                        v-for="datum in filterProfileFields('info')"
                        :key="datum.field">
-                  <profile-field :datum="datum" :profile="patientProfile"/>
+                  <profile-field v-if="datum.field != null" :datum="datum"
+                    :profile="patientProfile"/>
                 </v-col>
               </v-layout>
             </v-tab-item>
@@ -65,14 +66,16 @@
                        cols="12"
                        v-for="datum in filterProfileFields('contacts')"
                        :key="datum.field">
-                  <profile-field :datum="datum" :profile="patientProfile"/>
+                  <profile-field v-if="datum.field != null"
+                   :datum="datum" :profile="patientProfile"/>
                 </v-col>
                 <v-col md="4"
                        sm="6"
                        cols="12"
                        v-for="(contact,idx) in patientContacts"
                        :key="idx">
-                  <profile-field :display-name="`${contact.name} (${contact.note})`"
+                  <profile-field v-if="contact.contact != null"
+                  :display-name="`${contact.name} (${contact.note})`"
                                  :value="contact.contact"/>
                 </v-col>
               </v-layout>
