@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "defs": [
     {
       "table": "metas",
@@ -43,7 +43,7 @@
     },
     {
       "table": "diseases",
-      "columns": ["id_person", "id_care", "id_disease", "chronic", "note", "body_impacted", "from", "to", "medical_exemption", "medical_exemption_code", "creation", "update"],
+      "columns": ["id_person", "id_care", "id_disease", "chronic", "note", "body_impacted", "from", "to", "medical_exemption_number", "medical_exemption_code", "creation", "update"],
       "indexes": "++id_care,&[id_person+id_disease+from],id_person,id_disease"
     },
     {

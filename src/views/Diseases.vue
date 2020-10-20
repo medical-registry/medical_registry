@@ -26,6 +26,8 @@
                                   Esenzione Medica</th>
                               <th v-if="item.medical_exemption_code != null" class="text-left">
                                   Codice Esenzione</th>
+                              <th v-if="item.medical_exemption_number != null" class="text-left">
+                                  Numero Esenzione</th>
                               <th colspan="2"/>
                             </tr>
                       </thead>
@@ -36,6 +38,8 @@
                           <td v-if="item.medical_exemption != null">{{item.medical_exemption}}</td>
                           <td v-if="item.medical_exemption_code != null">
                               {{item.medical_exemption_code}}</td>
+                          <td v-if="item.medical_exemption_number != null">
+                              {{item.medical_exemption_number}}</td>
                           <td colspan="4"/>
                           </tr>
                       </tbody>
