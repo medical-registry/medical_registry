@@ -77,7 +77,7 @@ export default {
         trauma: keyedTraumaDefinitions[item.id_trauma],
         disease: keyedDiseaseDefinitions[item.id_disease],
         diseaseRegister:
-        keyedDiseaseRegisterDefinitions[keyedDiseaseDefinitions[item.id_disease].id_disease],
+          keyedDiseaseRegisterDefinitions[keyedDiseaseDefinitions[item.id_disease].id_disease],
 
       }));
     },
