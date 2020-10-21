@@ -25,7 +25,7 @@
                     <tbody>
                         <tr>
                         <td v-if="item.trauma">{{item.trauma.name}}</td>
-                        <td v-if="item.disease">{{item.disease.diseaseRegister.name}}</td>
+                        <td v-if="item.disease">{{item.diseaseRegister.name}}</td>
                         <td v-if="item.note != null">{{item.note}}</td>
                         <td colspan="4"/>
                         </tr>
@@ -37,8 +37,8 @@
         </v-timeline-item>
       </v-timeline>
         <AutocompleteSearch
-            invalid-hint="Seleziona Allergia"
-            label="Allergia"
+            invalid-hint="Seleziona Intervento"
+            label="Intervento"
             :table="database.allergy_register"
         />
 
@@ -53,7 +53,7 @@ import moment from 'moment';
 import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 
 export default {
-  name: 'Allergies',
+  name: 'Interventions',
   components: { AutocompleteSearch },
   methods: {
     formatDate: (value) => moment(value).format('LL'),
@@ -68,20 +68,17 @@ export default {
       const keyedTraumaDefinitions = keyBy(userTraumas, 'id_trauma');
       const userDiseases = await db.diseases
         .where({ id_person: this.$store.state.user.id }).toArray();
-      const diseaseIds = [...new Set(userDiseases.map((item) => item.id_disease))];
       const keyedDiseaseDefinitions = keyBy(userDiseases, 'id_care');
-      const diseaseRegister = await db.disease_register.bulkGet(diseaseIds);
+      const diseaseRegister = await db.disease_register.toArray();
       const keyedDiseaseRegisterDefinitions = keyBy(diseaseRegister, 'id');
-      userDiseases.map((item) => ({
-        ...item,
-        diseaseRegister:
-        keyedDiseaseRegisterDefinitions[item.id_disease],
-      }));
       this.items = userIntervention.map((item) => ({
         ...item,
         intervention: keyedInterventionDefinitions[item.id_intervention],
         trauma: keyedTraumaDefinitions[item.id_trauma],
         disease: keyedDiseaseDefinitions[item.id_disease],
+        diseaseRegister:
+        keyedDiseaseRegisterDefinitions[keyedDiseaseDefinitions[item.id_disease].id_disease],
+
       }));
     },
   },
