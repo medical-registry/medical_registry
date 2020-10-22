@@ -17,12 +17,12 @@
                   <template v-slot:default>
                     <thead>
                           <tr>
-                            <th class="text-left">Causa</th>
-                             <th v-if="item.daily_frequency != null" class="text-left">
+                            <th class="text-left" style="width: 500px">Causa</th>
+                             <th v-if="item.daily_frequency" class="text-left">
                                  Frequenza</th>
-                             <th v-if="item.body_impacted != null" class="text-left">
+                             <th v-if="item.body_impacted" class="text-left">
                                  Parte del corpo</th>
-                            <th v-if="item.note != null" class="text-left">
+                            <th v-if="item.note" class="text-left">
                                  Note</th>
                             <th colspan="2"/>
                           </tr>

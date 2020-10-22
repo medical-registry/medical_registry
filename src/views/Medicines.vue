@@ -16,7 +16,7 @@
                   <template v-slot:default>
                     <thead>
                           <tr>
-                            <th class="text-left">Causa</th>
+                            <th class="text-left" style="width: 500px">Causa</th>
                             <th v-if="item.dosage" class="text-left">Dosaggio</th>
                             <th v-if="item.unit" class="text-left">
                                 Unità</th>

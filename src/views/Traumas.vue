@@ -18,22 +18,22 @@
                   <template v-slot:default>
                     <thead>
                           <tr>
-                            <th v-if="item.severity != null" class="text-left">Severità</th>
-                            <th v-if="item.body_impacted != null" class="text-left">
+                            <th v-if="item.severity" class="text-left">Severità</th>
+                            <th v-if="item.body_impacted" class="text-left">
                               Parte del corpo</th>
-                            <th v-if="item.description != null" class="text-left">Descrizione</th>
-                            <th v-if="item.note != null" class="text-left">Note</th>
+                            <th v-if="item.description" class="text-left">Descrizione</th>
+                            <th v-if="item.note" class="text-left" style="width: 500px">Note</th>
                             <th colspan="2"/>
                           </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td v-if="item.severity != null" class="text-left">
+                            <td v-if="item.severity" class="text-left">
                               {{item.severity}}</td>
-                <td v-if="item.body_impacted != null" class="text-left">{{item.body_impacted}}</td>
-                            <td v-if="item.description != null" class="text-left">
+                <td v-if="item.body_impacted" class="text-left">{{item.body_impacted}}</td>
+                            <td v-if="item.description" class="text-left">
                               {{item.description}}</td>
-                            <td v-if="item.note != null" class="text-left">{{item.note}}</td>
+                            <td v-if="item.note" class="text-left">{{item.note}}</td>
                         <td colspan="4"/>
                         </tr>
                     </tbody>

@@ -19,26 +19,26 @@
                     <template v-slot:default>
                       <thead>
                             <tr>
-                              <th v-if="item.body_impacted != null" class="text-left">
+                              <th v-if="item.body_impacted" class="text-left">
                                   Parte del Corpo</th>
-                              <th v-if="item.note != null" class="text-left">Note</th>
-                              <th v-if="item.medical_exemption != null" class="text-left">
+                              <th v-if="item.note" class="text-left" style="width: 500px">Note</th>
+                              <th v-if="item.medical_exemption" class="text-left">
                                   Esenzione Medica</th>
-                              <th v-if="item.medical_exemption_code != null" class="text-left">
+                              <th v-if="item.medical_exemption_code" class="text-left">
                                   Codice Esenzione</th>
-                              <th v-if="item.medical_exemption_number != null" class="text-left">
+                              <th v-if="item.medical_exemption_number" class="text-left">
                                   Numero Esenzione</th>
                               <th colspan="2"/>
                             </tr>
                       </thead>
                       <tbody>
                           <tr>
-                          <td v-if="item.body_impacted != null">{{item.body_impacted}}</td>
-                          <td v-if="item.note != null">{{item.note}}</td>
-                          <td v-if="item.medical_exemption != null">{{item.medical_exemption}}</td>
-                          <td v-if="item.medical_exemption_code != null">
+                          <td v-if="item.body_impacted">{{item.body_impacted}}</td>
+                          <td v-if="item.note">{{item.note}}</td>
+                          <td v-if="item.medical_exemption">{{item.medical_exemption}}</td>
+                          <td v-if="item.medical_exemption_code">
                               {{item.medical_exemption_code}}</td>
-                          <td v-if="item.medical_exemption_number != null">
+                          <td v-if="item.medical_exemption_number">
                               {{item.medical_exemption_number}}</td>
                           <td colspan="4"/>
                           </tr>

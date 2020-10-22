@@ -17,8 +17,8 @@
                     <thead>
                           <tr>
                             <th class="text-left">Causa (link)</th>
-                            <th v-if="item.note != null" class="text-left">Note</th>
-                            <th v-if="item.body_impacted != null" class="text-left">
+                            <th v-if="item.note" class="text-left" style="width: 500px">Note</th>
+                            <th v-if="item.body_impacted" class="text-left">
                                 Parte del corpo</th>
                              <th class="text-left">Informazioni ricovero</th>
                             <th colspan="2"/>
@@ -28,8 +28,8 @@
                         <tr>
                         <td v-if="item.trauma">{{item.trauma.name}}</td>
                         <td v-if="item.disease">{{item.diseaseRegister.name}}</td>
-                        <td v-if="item.note != null">{{item.note}}</td>
-                        <td v-if="item.body_impacted != null">
+                        <td v-if="item.note">{{item.note}}</td>
+                        <td v-if="item.body_impacted">
                             {{item.body_impacted}}</td>
                         <td >Link Ricovero</td>
                         <td colspan="4"/>

@@ -20,7 +20,7 @@
                           <tr>
                             <th class="text-left">Intolleranza</th>
                             <th class="text-left">Severità</th>
-                            <th v-if="item.note" class="text-left">Note</th>
+                            <th v-if="item.note" class="text-left" style="width: 500px">Note</th>
                             <th colspan="2"/>
                           </tr>
                     </thead>

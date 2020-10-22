@@ -18,24 +18,24 @@
                   <template v-slot:default>
                    <thead>
                           <tr>
-                            <th v-if="item.parent_type != null" class="text-left">
+                            <th v-if="item.parent_type" class="text-left">
                               Grado di Parentela</th>
-                            <th v-if="item.body_impacted != null" class="text-left">
+                            <th v-if="item.body_impacted" class="text-left">
                               Parte del corpo</th>
-                            <th v-if="item.discovered_at_age != null" class="text-left">
+                            <th v-if="item.discovered_at_age" class="text-left">
                               Scoperto all'età di</th>
-                            <th v-if="item.note != null" class="text-left">Note</th>
+                            <th v-if="item.note" class="text-left" style="width: 500px">Note</th>
                             <th colspan="2"/>
                           </tr>
                     </thead>
                     <tbody>
                         <tr>
-                        <td v-if="item.parent_type != null" class="text-left">
+                        <td v-if="item.parent_type" class="text-left">
                           {{item.parent_type}}</td>
-                <td v-if="item.body_impacted != null" class="text-left">{{item.body_impacted}}</td>
-                        <td v-if="item.discovered_at_age != null" class="text-left">
-                            {{item.discovered_at_age}}</td>
-                        <td v-if="item.note != null" class="text-left">{{item.note}}</td>
+                <td v-if="item.body_impacted" class="text-left">{{item.body_impacted}}</td>
+                        <td v-if="item.discovered_at_age" class="text-left">
+                            {{item.discovered_at_age}} anni</td>
+                        <td v-if="item.note" class="text-left">{{item.note}}</td>
                         <td colspan="4"/>
                         </tr>
                     </tbody>

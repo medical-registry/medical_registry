@@ -20,7 +20,7 @@
                             <th class="text-left">Causa</th>
                             <th v-if="item.acceptance" class="text-left">Accettazione</th>
                             <th v-if="item.discharge" class="text-left">Dimissioni</th>
-                            <th v-if="item.note != null" class="text-left">Note</th>
+                            <th v-if="item.note" class="text-left" style="width: 500px">Note</th>
                             <th colspan="2"/>
                           </tr>
                     </thead>
@@ -28,8 +28,8 @@
                         <tr>
                         <td v-if="item.trauma">{{item.trauma.name}}</td>
                         <td v-if="item.disease">{{item.diseaseRegister.name}}</td>
-                        <td v-if="item.acceptance != null">{{item.acceptance}}</td>
-                        <td v-if="item.discharge != null">
+                        <td v-if="item.acceptance">{{item.acceptance}}</td>
+                        <td v-if="item.discharge">
                             {{item.discharge}}</td>
                         <td colspan="4"/>
                         </tr>
