@@ -6,9 +6,10 @@
         <v-timeline  align-top dense>
           <v-timeline-item v-for="item in items" :key="item.id_care" small>
             <v-card class="elevation-3">
-              <v-card-title class="text-center">{{item.disease.name}}</v-card-title>
               <v-card-title v-if="item.chronic==true" class="text-center">
-                   (Cronico)</v-card-title>
+                   {{item.disease.name}} (Cronico)</v-card-title>
+              <v-card-title v-else class="text-center">
+                   {{item.disease.name}}</v-card-title>
               <v-card-title v-if="!item.to" class="headline capitalized">{{formatDate(item.from)}}
               </v-card-title>
               <v-card-title v-else class="headline capitalized">Dal {{formatDate(item.from)}}
