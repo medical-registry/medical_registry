@@ -12,13 +12,15 @@
               al {{formatDate(item.to)}}
             </v-card-title>
             <v-card-text>
-                {{item}}
                 <v-simple-table>
                   <template v-slot:default>
                     <thead>
                           <tr>
-                            <th class="text-left">Causa</th>
+                            <th class="text-left">Causa (link)</th>
                             <th v-if="item.note != null" class="text-left">Note</th>
+                            <th v-if="item.body_impacted != null" class="text-left">
+                                Parte del corpo</th>
+                             <th class="text-left">Informazioni ricovero</th>
                             <th colspan="2"/>
                           </tr>
                     </thead>
@@ -27,6 +29,9 @@
                         <td v-if="item.trauma">{{item.trauma.name}}</td>
                         <td v-if="item.disease">{{item.diseaseRegister.name}}</td>
                         <td v-if="item.note != null">{{item.note}}</td>
+                        <td v-if="item.body_impacted != null">
+                            {{item.body_impacted}}</td>
+                        <td >Link Ricovero</td>
                         <td colspan="4"/>
                         </tr>
                     </tbody>
@@ -39,7 +44,7 @@
         <AutocompleteSearch
             invalid-hint="Seleziona Intervento"
             label="Intervento"
-            :table="database.allergy_register"
+            :table="database.intervention_register"
         />
 
     </v-card>
@@ -71,13 +76,20 @@ export default {
       const keyedDiseaseDefinitions = keyBy(userDiseases, 'id_care');
       const diseaseRegister = await db.disease_register.toArray();
       const keyedDiseaseRegisterDefinitions = keyBy(diseaseRegister, 'id');
+
+      const userHospitalizations = await db.hospitalization
+        .where({ id_person: this.$store.state.user.id }).toArray();
+      const keyedHospitalizationDefinitions = keyBy(userHospitalizations, 'id_hospitalization');
+
       this.items = userIntervention.map((item) => ({
         ...item,
         intervention: keyedInterventionDefinitions[item.id_intervention],
         trauma: keyedTraumaDefinitions[item.id_trauma],
         disease: keyedDiseaseDefinitions[item.id_disease],
+        hospitalization: keyedHospitalizationDefinitions[item.id_hospitalization],
         diseaseRegister:
-          keyedDiseaseRegisterDefinitions[keyedDiseaseDefinitions[item.id_disease].id_disease],
+          keyedDiseaseRegisterDefinitions[
+            keyedDiseaseDefinitions[item.id_disease]?.id_disease ?? 0],
 
       }));
     },

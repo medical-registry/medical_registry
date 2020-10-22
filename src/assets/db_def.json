@@ -1,5 +1,5 @@
 {
-  "version": 28,
+  "version": 42,
   "defs": [
     {
       "table": "metas",
@@ -103,7 +103,7 @@
     },
     {
       "table": "medicines",
-      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergies", "name", "id_medicine", "dosage", "unit", "body_impacted", "daily_frequency", "from", "to", "creation", "update"],
+      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergy", "name", "id_medicine", "dosage", "unit", "body_impacted", "daily_frequency", "from", "to", "creation", "update"],
       "indexes": "++id_care,&[id_person+id_medicine+id_trauma+id_disease+id_intervention+id_allergies+from],id_person,id_medicine,id_trauma,id_disease,id_intervention,id_allergies"
     },
     {
@@ -128,8 +128,8 @@
     },
     {
       "table": "therapies",
-      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergy", "name", "id_therapy", "medicine", "id_medicine", "dosage", "daily_frequency", "note", "body_impacted", "from", "to", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update"],
-      "indexes": "++id_care,&[id_person+id_care+id_trauma+id_disease+id_intervention+id_allergy+id_therapy+id_medicine+from],id_personid_person,id_care,id_trauma,id_disease,id_intervention,id_allergy,id_therapy,id_medicine"
+      "columns": ["id_person", "id_care", "id_trauma", "id_disease", "id_intervention", "id_allergy", "name", "id_therapy",  "daily_frequency", "note", "body_impacted", "from", "to", "id_location", "location_name", "id_doctor", "city", "address", "zip_code", "code_nation", "contact", "contact_2", "creation", "update"],
+      "indexes": "++id_care,&[id_person+id_care+id_trauma+id_disease+id_intervention+id_allergy+id_therapy+from],id_personid_person,id_care,id_trauma,id_disease,id_intervention,id_allergy,id_therapy"
     },
     {
       "table": "therapy_register",
