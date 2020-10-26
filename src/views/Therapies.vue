@@ -62,7 +62,6 @@ export default {
     async fetchTherapies() {
       const userTherapy = await db.therapies
         .where({ id_person: this.$store.state.user.id }).toArray();
-      console.log(db.therapies);
       const therapyIds = [...new Set(userTherapy.map((item) => item.id_therapy))];
       const therapyRegister = await db.therapy_register.bulkGet(therapyIds);
       const keyedTherapyDefinitions = keyBy(therapyRegister, 'id');
