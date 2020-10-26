@@ -93,6 +93,14 @@ const routes = [
     component: () => import('../views/Therapies.vue'),
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
+
+  {
+    path: '/vaccines',
+    name: 'Vaccini',
+    icon: 'mdi-needle',
+    component: () => import('../views/Vaccines.vue'),
+    meta: { requiresLogin: true, drawer: true, groupHome: true },
+  },
   {
     path: '/timeline',
     name: 'Cronologia',
