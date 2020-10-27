@@ -32,12 +32,14 @@
               </span>
               <br/>
               <p v-if="group.values[0].note">
-                <b>Note</b> <br/>
+                <b v-if="macro_category !== 'LABORATORIO ALTRO'">Note</b>
+                <b v-if="macro_category === 'LABORATORIO ALTRO'">Referto</b>
+                <br/>
                 <span>
                   {{group.values[0].note}}
                 </span>
               </p>
-              <v-simple-table>
+              <v-simple-table v-if="macro_category !== 'LABORATORIO ALTRO'">
                 <template v-slot:default>
                   <thead>
                     <tr>

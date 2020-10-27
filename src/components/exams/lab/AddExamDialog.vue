@@ -112,13 +112,13 @@
             :required="true"
             :table="database.exam_register"
             :filters="[
-              (a) => macro_category === 'LABORATORIO ALTRO' ?
+              (a) => macro_category !== 'LABORATORIO ALTRO' ?
                 a.category === category :
-                a.macro_category === macro_category
+                a.macro_category === 'LABORATORIO ALTRO'
             ]"
             v-on:change="setExamId"
             :default-creation-values="{category, macro_category}"/>
-          <v-row>
+          <v-row v-if=" macro_category !== 'LABORATORIO ALTRO'">
             <v-col class="pa-0 px-2">
               <v-checkbox v-model="exam.highlight" label="Segnalato"/>
             </v-col>
@@ -135,9 +135,10 @@
           <v-textarea
             class="mt-5"
             outlined
-            placeholder="Note"
-            label="Note"
-            v-model="exam.note"/>
+            :placeholder="macro_category !== 'LABORATORIO ALTRO' ? 'Note' : 'Referto'"
+            :label="macro_category !== 'LABORATORIO ALTRO'? 'Note' : 'Referto'"
+            v-model="exam.note"
+            :rules="[v => (macro_category !== 'LABORATORIO ALTRO' || !!v) || 'Aggiungi Referto']"/>
         </v-form>
       </v-card-text>
       <v-card-actions class="px-5 pb-5">
