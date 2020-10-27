@@ -111,7 +111,11 @@
             label="Tipologia Esame"
             :required="true"
             :table="database.exam_register"
-            :filters="[(a) => a.category === this.category]"
+            :filters="[
+              (a) => macro_category === 'LABORATORIO ALTRO' ?
+                a.category === category :
+                a.macro_category === macro_category
+            ]"
             v-on:change="setExamId"
             :default-creation-values="{category, macro_category}"/>
           <v-row>

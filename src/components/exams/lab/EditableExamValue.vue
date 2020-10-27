@@ -8,9 +8,7 @@
       <v-btn color="primary" fab x-small dark elevation="0" class="mr-2" @click="editing=true">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-btn color="teal" fab x-small dark elevation="0" class="mr-2">
-        <v-icon>mdi-chart-line</v-icon>
-      </v-btn>
+      <ValueChartDialog :exam-id="exam.id_exam" :person-id="userId" :exam-name="def.name"/>
       <v-btn color="error" fab x-small dark elevation="0" @click="deleteExam">
         <v-icon>mdi-close</v-icon>
       </v-btn>
@@ -53,16 +51,18 @@
 import db from '@/services/database';
 import moment from 'moment';
 import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
+import ValueChartDialog from '@/components/exams/lab/ValueChartDialog.vue';
 
 export default {
   name: 'EditableExamValue',
-  components: { AutocompleteSearch },
+  components: { ValueChartDialog, AutocompleteSearch },
   props: {
     item: null,
     category: null,
     units: null,
     parent: null,
     macro_category: null,
+    userId: null,
   },
   methods: {
     async deleteExam() {

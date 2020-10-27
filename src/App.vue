@@ -65,7 +65,7 @@ export default {
 </script>
 <style lang="scss">
 .capitalized {
-  text-transform: capitalize;
+  text-transform: capitalize!important;
   input{
     text-transform: capitalize!important;
   }

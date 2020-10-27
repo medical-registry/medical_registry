@@ -12,10 +12,18 @@
       <v-timeline  align-top dense>
         <v-timeline-item v-for="group in timelineItems" :key="group.date" small>
           <v-card class="elevation-3">
-            <v-card-title class="headline capitalized">
-              {{formatDate(group.date)}} {{group.values[0].time? group.value[0].time : ''}}
+            <v-card-title class="headline capitalized" v-if="!group.values[0].to">
+              {{formatDate(group.values[0].from)}}
+              {{group.values[0].time? group.values[0].time : ''}}
+            </v-card-title>
+            <v-card-title class="headline capitalized" v-else>
+              Dal {{formatDate(group.values[0].from)}}
+              al {{formatDate(group.values[0].to)}}
             </v-card-title>
             <v-card-text>
+              <span class="capitalized" v-if="macro_category === 'LABORATORIO ALTRO'">
+                {{group.values[0].exam.category}} <br/>
+              </span>
               <span v-if="group.values[0].diagnostic_question">
                 Quesito:
                 <span  class="capitalized">
@@ -47,14 +55,16 @@
                       :category="category"
                       :macro_category="macro_category"
                       v-on:delete="fetchExams"
-                      :item="item"/>
+                      :item="item"
+                      :user-id="userId"/>
                     <EditableExamValue
                       v-if="adding"
                       :units="units"
                       :category="category"
                       :macro_category="macro_category"
                       :parent="group.values[0]"
-                      v-on:update="handleNewItem"/>
+                      v-on:update="handleNewItem"
+                      :user-id="userId"/>
                   </tbody>
                   <tfoot>
                     <tr v-if="!adding">
@@ -114,7 +124,7 @@ export default {
       userExams.forEach((item) => {
         const examDef = keyedExamDefinitions[item.id_exam];
         if (!examDef
-          || examDef.category !== this.category
+          || (examDef.category !== this.category && this.macro_category !== 'LABORATORIO ALTRO')
           || examDef.macro_category !== this.macro_category) {
           return;
         }
