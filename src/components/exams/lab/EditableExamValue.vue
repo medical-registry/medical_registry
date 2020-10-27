@@ -28,7 +28,7 @@
       />
     </td>
     <td class="pa-0 px-2">
-      <v-text-field label="Valore" v-model="exam.value" type="number"/>
+      <v-text-field label="Valore" v-model="exam.value"/>
     </td>
     <td class="pa-0 px-2">
       <v-select :items="units" v-model="exam.unit" label="Unità Di Misura"/>

@@ -123,7 +123,7 @@
               <v-checkbox v-model="exam.highlight" label="Segnalato"/>
             </v-col>
             <v-col class="pa-0 px-2">
-              <v-text-field label="Valore" v-model="exam.value" type="number"
+              <v-text-field label="Valore" v-model="exam.value"
                             :rules="[v => !!v || 'Aggiungi Valore']"/>
             </v-col>
             <v-col class="pa-0 px-2">
