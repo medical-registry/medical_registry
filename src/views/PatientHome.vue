@@ -17,7 +17,7 @@
                   {{patientProfile.name}} {{patientProfile.surname}}
                 </span>
               <br/>
-              <span  class="text-md-h5 text-sm-h7 text-h8">
+              <span class="text-md-h5 text-sm-h7 text-h8">
                   {{patientProfile.code}}
                 </span>
             </v-card-text>
@@ -33,13 +33,7 @@
           </v-flex>
         </v-row>
         <v-row>
-          <v-tabs
-            v-model="tab"
-            background-color="transparent"
-            class="elevation-0 mt-5"
-            grow
-            md12
-          >
+          <v-tabs v-model="tab" background-color="transparent" class="elevation-0 mt-5" grow md12>
             <v-tabs-slider></v-tabs-slider>
             <v-tab href="#info">
               Info
@@ -47,63 +41,45 @@
             <v-tab href="#contacts">
               Contatti
             </v-tab>
-            <v-tab-item value="info">
-              <v-layout row wrap justify-start  class="mt-2">
+            <v-tab-item value="info"  class="mt-10">
+              <v-layout row wrap justify-start >
                 <v-col :md="datum.fullWidth? 12: 4"
                        :sm="datum.fullWidth? 12: 6"
                        cols="12"
                        v-for="datum in filterProfileFields('info')"
                        :key="datum.field">
                   <profile-field v-if="datum.field != null" :datum="datum"
-                    :profile="patientProfile"/>
+                                 :profile="patientProfile"/>
                 </v-col>
               </v-layout>
+              <p class="text-md-body-1 text-sm-body-2 text-body-2 font-weight-bold mt-4">
+                Allergie
+              </p>
+              <AddAllergyDialog :on-add="fetchData" :user-id="user.id"
+                                :editing-record="allergy"
+                                v-for="allergy in allergies" :key="allergy.id_allergy"/>
+              <AddAllergyDialog :on-add="fetchData" :user-id="user.id"/>
             </v-tab-item>
             <v-tab-item value="contacts">
-              <v-layout row wrap justify-start  class="mt-2">
-                <v-col :md="datum.fullWidth? 12: 4"
-                       :sm="datum.fullWidth? 12: 6"
-                       cols="12"
-                       v-for="datum in filterProfileFields('contacts')"
-                       :key="datum.field">
-                  <profile-field v-if="datum.field != null"
-                   :datum="datum" :profile="patientProfile"/>
-                </v-col>
-                <v-col md="4"
-                       sm="6"
-                       cols="12"
-                       v-for="(contact,idx) in patientContacts"
-                       :key="idx">
-                  <profile-field v-if="contact.contact != null"
-                  :display-name="`${contact.name} (${contact.note})`"
-                                 :value="contact.contact"/>
-                </v-col>
-              </v-layout>
+             <Contacts :profile="patientProfile"/>
             </v-tab-item>
           </v-tabs>
         </v-row>
       </v-card>
       <v-layout row wrap>
         <v-flex md4 sm12>
-          <ActiveTimeline
-            type="allergies"
-            :user-id="patientProfile.id"
-            title="Allergie Attive"
-          />
         </v-flex>
         <v-flex md4 sm12>
             <ActiveTimeline
               type="diagnosis"
               :user-id="patientProfile.id"
-              title="Diagnosi Attive"
-            />
+              title="Diagnosi Attive"/>
         </v-flex>
         <v-flex md4 sm12>
             <ActiveTimeline
               type="prescriptions"
               :user-id="patientProfile.id"
-              title="Prescrizioni Attive"
-            />
+              title="Prescrizioni Attive"/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -117,6 +93,8 @@ import moment from 'moment';
 import { resolveCountryByCode } from '@/services/util';
 import ProfileField from '@/components/home/ProfileField.vue';
 import ActiveTimeline from '@/components/home/ActiveTimeline.vue';
+import Contacts from '@/components/home/Contacts.vue';
+import AddAllergyDialog from '@/components/home/AddAllergyDialog.vue';
 
 const computeAge = (date) => moment(Date.now()).diff(date, 'years');
 
@@ -163,11 +141,17 @@ const fields = [
   {
     field: 'full_address',
     displayName: 'Indirizzo',
-    fullWidth: true,
+    fullWidth: false,
     computed: true,
     extractor: (profile) => `${profile.address},
       ${profile.zip_code} ${profile.city},
       ${resolveCountryByCode(profile.country)}`,
+    section: 'info',
+  },
+  {
+    field: 'particular_signs',
+    displayName: 'Segni Particolari',
+    fullWidth: false,
     section: 'info',
   },
   { field: 'telephone_1', displayName: 'Telefono', section: 'contacts' },
@@ -179,47 +163,49 @@ const fields = [
     fullWidth: true,
     section: 'info',
   },
-  {
-    field: 'particular_signs',
-    displayName: 'Segni Particolari',
-    fullWidth: true,
-    section: 'info',
-  },
-
 ];
 export default {
   name: 'Home',
-  // eslint-disable-next-line vue/no-unused-components
-  components: { ActiveTimeline, ProfileField },
+  components: {
+    AddAllergyDialog, Contacts, ActiveTimeline, ProfileField,
+  },
   data() {
     return {
       isMobile: false,
       loading: true,
       patientProfile: null,
-      patientContacts: [],
       error: null,
       fields,
       tab: null,
+      allergies: null,
       user: this.$store.state.user,
     };
   },
   created() {
     this.fetchData();
-    this.fetchContacts();
   },
   methods: {
-    fetchData() {
-      api.fetchPatientProfile(this.user.id)
-        .then((response) => {
-          this.patientProfile = response.data;
-          this.loading = false;
-        });
+    async fetchData() {
+      this.loading = true;
+      this.patientProfile = await api.fetchPatientProfile(this.user.id);
+      this.allergies = await api.fetchUserAllergies(this.user.id);
+      this.allergies = this.allergies.map((allergy) => ({
+        ...allergy,
+        color: this.selectAllergyColor(allergy),
+        textColor: allergy.to ? 'black' : 'white',
+      }));
+      this.loading = false;
     },
-    fetchContacts() {
-      api.fetchUserContacts()
-        .then((response) => {
-          this.patientContacts = response.data;
-        });
+    selectAllergyColor(allergy) {
+      if (allergy.to) {
+        return 'gray';
+      }
+      switch (allergy.severity) {
+        case 'BASSA': return 'yellow darken-2';
+        case 'MEDIA': return 'orange darken-2';
+        case 'ALTA': return 'deep-orange darken-2';
+        default: return 'gray';
+      }
     },
     filterProfileFields(section) {
       return fields.filter((datum) => datum.section === section

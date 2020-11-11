@@ -36,11 +36,11 @@ const populateDB = (progressCallback) => {
         const clearTable = db[table] ? db[table].clear() : Promise.resolve();
         promises.push(
           clearTable
-            .catch((e) => console.log(`error poplating ${table}: ${e.message}`))
-            .then(() => {
-              db[table].bulkAdd(objs);
+            .catch((e) => console.log(`error populating ${table}: ${e.message}`))
+            .then(() => db[table].bulkAdd(objs))
+            .catch((e) => {
+              console.log(`error populating ${table}: ${e.message}`);
             })
-            .catch((e) => console.log(`error poplating ${table}: ${e.message}`))
             .then(() => setTimeout(() => progressCallback(totalRecords, entries.length), 10)),
         );
       });

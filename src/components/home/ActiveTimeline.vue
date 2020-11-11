@@ -37,7 +37,7 @@
               Per allergia: <strong>{{item.allergy.name}}</strong>
             </div>
           </v-flex>
-          <v-flex v-else-if="type === 'allergies'">
+          <v-flex v-else-if="type === 'exams'">
             <span class="text-h7">{{formatDate(item.from)}}</span>
             <br>
             <strong>
@@ -58,7 +58,6 @@
       </v-card-title>
     </v-card-title>
     <v-card-actions>
-      <AddAllergyDialog v-if="type === 'allergies'" :on-add="fetchData"/>
       <AddDiseaseDialog v-if="type === 'diagnosis'" :on-add="fetchData"/>
       <AddPrescriptionDialog v-if="type === 'prescriptions'" :on-add="fetchData"/>
     </v-card-actions>
@@ -68,7 +67,6 @@
 <script>
 import moment from 'moment';
 import api from '@/services/api';
-import AddAllergyDialog from '@/components/home/AddAllergyDialog.vue';
 import AddDiseaseDialog from '@/components/home/AddDiseaseDialog.vue';
 import AddPrescriptionDialog from '@/components/home/AddPrescriptionDialog.vue';
 
@@ -80,7 +78,7 @@ const compareEvents = (order) => (o1, o2) => {
 
 export default {
   name: 'ActiveTimeline',
-  components: { AddPrescriptionDialog, AddDiseaseDialog, AddAllergyDialog },
+  components: { AddPrescriptionDialog, AddDiseaseDialog },
   props: {
     userId: null,
     type: null,
@@ -99,7 +97,7 @@ export default {
         promise = api.fetchPatientDiagnosis(this.userId);
       } else if (this.type === 'prescriptions') {
         promise = api.fetchUserPrescriptions(this.userId);
-      } else if (this.type === 'allergies') {
+      } else if (this.type === 'exams') {
         promise = api.fetchUserAllergies(this.userId);
       }
       promise

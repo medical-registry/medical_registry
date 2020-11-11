@@ -7,9 +7,7 @@ const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
       if (!user) {
         reject(new Error(`no entry in 'register' for id: ${userId}`));
       } else {
-        resolve({
-          data: user,
-        });
+        resolve(user);
       }
     });
 });
@@ -95,28 +93,21 @@ const fetchUserContacts = (userId) => db.contact
   .toArray()
   .then((data) => ({ data }));
 
-const fetchUserAllergies = (userId) => {
-  let userAllergies;
-  return db.allergies
-    .where({ id_person: userId })
-    .toArray()
-    .then((res) => {
-      userAllergies = res;
-      const allergyIds = new Set();
-      res.forEach((item) => allergyIds.add(parseInt(item.id_allergy, 10)));
-      return db.allergy_register.where('id')
-        .anyOf([...allergyIds])
-        .toArray();
-    })
-    .then((allergyDefs) => {
-      const idToAllergy = keyBy(allergyDefs, 'id');
-      return {
-        data: userAllergies.map((item) => ({
-          ...item,
-          allergy: idToAllergy[item.id_allergy],
-        })),
-      };
-    });
+const fetchUserAllergies = async (userId) => {
+  const allergies = await db.allergies.where({ id_person: userId }).toArray();
+  const allergyIds = [...new Set(allergies.map((item) => item.id_allergy))];
+  const allergyDefs = await db.allergy_register.where('id').anyOf(allergyIds).toArray();
+  const idToAllergy = keyBy(allergyDefs, 'id');
+  return allergies.map((allergy) => ({
+    ...allergy,
+    def: idToAllergy[allergy.id_allergy],
+    intolerance: allergy.intolerance === true || allergy.intolerance === 'S',
+  }));
+};
+
+const fetchUserExams = async (userId) => {
+  const exams = await db.exams.where({ id_person: userId }).toArray();
+  return exams;
 };
 
 const login = (email, password) => new Promise((resolve, reject) => {
@@ -143,4 +134,5 @@ export default {
   fetchUserContacts,
   fetchUserAllergies,
   login,
+  fetchUserExams,
 };
