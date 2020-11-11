@@ -268,49 +268,39 @@ export default {
       this.disease = null;
       this.intervention = null;
     },
-    save() {
-      db.medicines.get({
-        id_person: this.user.id,
-        id_medicine: this.drug.id,
-        id_trauma: this.trauma ? this.trauma.id_trauma : null,
-        id_disease: this.disease ? this.disease.id_disease : null,
-        id_intervention: this.intervention ? this.intervention.id_intervention : null,
-        id_allergies: this.allergy ? this.allergy.id_allergy : null,
-        from: this.from,
-      })
-        .then((o) => {
-          if (o) {
-            return Promise.reject(new Error('present'));
-          }
-          return db.medicines
-            .add({
-              id_person: this.user.id,
-              id_medicine: this.drug.id,
-              id_trauma: this.trauma ? this.id_trauma.id : null,
-              id_disease: this.disease ? this.id_disease.id : null,
-              id_intervention: this.intervention ? this.id_intervention.id : null,
-              id_allergies: this.allergy ? this.id_allergy.id : null,
-              daily_frequency: this.daily_frequency,
-              dosage: this.dosage,
-              unit: this.unit,
-              body_impacted: this.body_impacted,
-              note: this.note,
-              from: this.from,
-              to: this.to,
-              creation: moment().format(),
-              update: moment().format(),
-            });
-        })
-        .then(() => {
-          this.$refs.form.reset();
-          this.dialog = false;
-          if (this.onAdd) {
-            this.onAdd();
-          }
-        })
-        .catch((e) => {
-          console.log(e.message);
+    async save() {
+      // const existing = await db.medicines.get({
+      //   id_person: this.user.id,
+      //   id_medicine: this.drug.id,
+      //   id_trauma: this.trauma ? this.trauma.id_trauma : null,
+      //   id_disease: this.disease ? this.disease.id_disease : null,
+      //   id_intervention: this.intervention ? this.intervention.id_intervention : null,
+      //   id_allergies: this.allergy ? this.allergy.id_allergy : null,
+      //   from: this.from,
+      // });
+      await db.medicines
+        .put({
+          id_person: this.user.id,
+          id_medicine: this.drug.id,
+          id_trauma: this.trauma ? this.trauma.id : null,
+          id_disease: this.disease ? this.disease.id : null,
+          id_intervention: this.intervention ? this.intervention.id : null,
+          id_allergies: this.allergy ? this.allergy.id : null,
+          daily_frequency: this.daily_frequency,
+          dosage: this.dosage,
+          unit: this.unit,
+          body_impacted: this.body_impacted,
+          note: this.note,
+          from: this.from,
+          to: this.to,
+          creation: moment().format(),
+          update: moment().format(),
         });
+      this.$refs.form.reset();
+      this.dialog = false;
+      if (this.onAdd) {
+        this.onAdd();
+      }
     },
   },
 };
