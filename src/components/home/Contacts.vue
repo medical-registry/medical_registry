@@ -6,29 +6,28 @@
       <span v-if="doctor.title" class="text-h7 font-weight-regular">, {{doctor.title}}</span>
       <br>
     </div>
-    <v-row wrap justify-start  class="mt-0 mb-7">
+    <v-row wrap justify-start  class="mt-0 mb-7" v-if="doctor">
       <v-col class="pt-0">
         <span class="text-subtitle-2 capitalized">
-          <v-icon color="black" small>mdi-map-marker</v-icon>
-          {{doctor.location.name}},
-          {{doctor.location.address}},
-          {{doctor.location.zip_code}},
-          {{doctor.location.city}}<br>
-          <v-icon color="black" small>mdi-phone</v-icon> {{doctor.location.phone}}
+          <Map :location="doctor.location"/><br>
+          <v-icon color="black" small>mdi-phone</v-icon>&nbsp;
+          <a :href='`tel:${doctor.location.phone}`'>{{doctor.location.phone}}</a>
         </span>
       </v-col>
     </v-row>
     <span class="text-h6 font-weight-regular">Contatti Personali</span>
     <v-row wrap justify-start  class="mt-2">
       <v-col v-if="profile.telephone_1 && profile.telephone_1.trim() !== ''" md="4">
-        <v-icon color="black">mdi-phone</v-icon>
-        {{profile.telephone_1}}
+        <v-icon color="black">mdi-phone</v-icon>&nbsp;
+        <a :href='`tel:${profile.telephone_1}`'>{{profile.telephone_1}}</a>
       </v-col>
       <v-col v-if="profile.telephone_1 && profile.telephone_1.trim() !== ''" md="4">
-        <v-icon color="black">mdi-phone</v-icon>
-        {{profile.telephone_2}}
+        <v-icon color="black">mdi-phone</v-icon>&nbsp;
+        <a :href='`tel:${profile.telephone_2}`'>{{profile.telephone_2}}</a>
       </v-col>
-      <v-col v-if="profile.email"><v-icon>mdi-at</v-icon> {{profile.email}}</v-col>
+      <v-col v-if="profile.email"><v-icon>mdi-at</v-icon>&nbsp;
+        <a :href='`mailto:${profile.email}`'>{{profile.email}}</a>
+      </v-col>
     </v-row>
     <div class="text-h6 mt-5 font-weight-regular" v-if="contacts && contacts.length>0">
       Altri Contatti
@@ -38,7 +37,13 @@
         <span class="subtitle-2">{{contact.name}}</span><br>
         <v-icon color="black" v-if="contact.typology === 'telefono'">mdi-phone</v-icon>
         <v-icon color="black" v-if="contact.typology === 'email'">mdi-at</v-icon>
-        {{contact.contact}}<br>
+        <a  v-if="contact.typology === 'email'" :href='`mailto:${contact.contact}`'>
+          {{contact.contact}}
+        </a>
+        <a  v-if="contact.typology === 'telefono'" :href='`tel:${contact.contact}`'>
+          {{contact.contact}}
+        </a>
+        <br>
         <span class="caption" v-if="contact.note && contact.note !== ''">{{contact.note}}</span>
       </v-col>
     </v-row>
@@ -47,9 +52,11 @@
 
 <script>
 import db from '@/services/database';
+import Map from '@/components/Map.vue';
 
 export default {
   name: 'Contacts',
+  components: { Map },
   props: {
     profile: null,
   },
@@ -80,5 +87,7 @@ export default {
 </script>
 
 <style scoped>
-
+a {
+  text-decoration: none;
+}
 </style>

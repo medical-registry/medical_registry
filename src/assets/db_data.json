@@ -10817,7 +10817,7 @@
         ["location_register", 1404, "AZIENDA OSPEDALIERO UNIVERSITARIA SS", "SASSARI", "VIA COPPINO N° 26", "07100", 0, "079 2830672"],
         ["location_register", 1405, "A.O.U. Cagliari", "CAGLIARI", "VIA OSPEALE, 46", "09124", 0, "070 51092343"],
         ["location_register", 1406, "A.O.U. Cagliari", "CAGLIARI", "VIA OSPEALE, 46", "09124", 0, "070 51092343"],
-        ["location_register", 1407, "Studio Medico Dr. Marco Bianchi", "Milano", "Piazza Della scala 2", "20100", 0, "02 123456"],
+        ["location_register", 1407, "Studio Medico Dr. Marco Bianchi", "Milano", "Piazza Della scala 2", "20100", 0, "02 123456",45.466701,9.190312],
         ["medicine_register", 1, "ACAMPROSATO 333MG 84 UNITÁ USO ORALE", "ACAMPROSATO", "CAMPRAL*84 CPR RIV GASTRORES 333 MG", "BRUNO FARMACEUTICI SPA", "34208013", "H0A"],
         ["medicine_register", 2, "ACARBOSIO 100MG 40 UNITÁ USO ORALE", "ACARBOSIO", "ACARPHAGE*40 CPR 100 MG", "MERCK SERONO SPA", "38835144", "H1A"],
         ["medicine_register", 3, "ACARBOSIO 100MG 40 UNITÁ USO ORALE", "ACARBOSIO", "ACARBOSIO*40 CPR 100 MG", "TECNIMEDE SOC.TECNICO-MED.S.A.", "39716182", "H1A"],
@@ -20450,10 +20450,10 @@
         ["medicine_register", 9637, "ZONISAMIDE 50MG 28 UNITÁ USO ORALE", "Zonisamide", "ZONISAMIDE*28 cps 50 mg", "MYLAN Sas", "44836070", "TIC"],
         ["medicine_register", 9638, "ZONISAMIDE 50MG 28 UNITÁ USO ORALE", "Zonisamide", "ZONEGRAN*28 cps 50 mg", "EISAI GMBH", "36959094", "TIC"],
         ["medicine_register", 9639, "ZUCLOPENTIXOLO 200MG 1 UNITÁ USO PARENTERALE RP", "Zuclopentixolo", "CLOPIXOL*1 fiala IM 200 mg 1 ml rilascio prolungato", "LUNDBECK ITALIA SpA", "26890158", "TJA"],
-        ["medicines", 1, 1, null, 2, null, null, null, 8702, "", "", "", "3 AL GIORNO", "2018-06-17", "", "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
+        ["medicines", 1, 1, null, 2, null, null, null, 8702, "", "", "", "3 AL GIORNO", "2018-06-17", null, "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
         ["medicines", 1, 2, null, null, 1, null, null, 2434, "", "", "", "2 AL GIORNO", "2009-02-10", "2009-03-04", "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
         ["medicines", 1, 3, 1, null, null, null, null, 7095, "", "", "", "IN CASO DI DOLORE", "2019-04-13", "2019-04-29", "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
-        ["medicines", 1, 4, null, null, null, 1, null, 5239, "10", "mg", "", "1 AL GIORNO", "2019-04-07", "", "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
+        ["medicines", 1, 4, null, null, null, 1, null, 5239, "10", "mg", "", "1 AL GIORNO", "2019-04-07", null, "0000-00-00 00:00:00.000000", "0000-00-00 00:00:00.000000"],
         ["nation_register", "AD", "ANDORRA", "ANDORRA"],
         ["nation_register", "AE", "EMIRATI ARABI UNITI", "ARABIAN EMIRATES"],
         ["nation_register", "AF", "AFGHANISTAN", "AFGHANISTAN"],
@@ -20755,8 +20755,8 @@
         ["therapy_register", 34, "LIMITARE CARNE ROSSA", "DIETA"],
         ["therapy_register", 35, "LIMITARE LATTICINI", "DIETA"],
         ["therapy_register", 36, "LIMITARE SALE", "DIETA"],
-        ["traumas", 1, 1, "TRAUMA CRANICO", "MEDIO", "Breve perdita di conoscenza. No Amnesia, No Vomito", "Testa", "2016-01-04", null, "mattina", "Controllo dopo un mese. Edema Interno assorbito", "2020-09-09 13:00:51.000000", "2020-09-09 13:00:51.000000"],
-        ["traumas", 1, 2, "ROTTURA POLSO", "MEDIO", "frattura scomposta", "polso dx", "2015-01-04", null, "mattina", "Controllo dopo un mese", "2020-09-09 13:00:51.000000", "2020-09-09 13:00:51.000000"]
+        ["traumas", 1, 1, 1, "TRAUMA CRANICO", "MEDIO", "Breve perdita di conoscenza. No Amnesia, No Vomito", "Testa", "2016-01-04", null, "mattina", "Controllo dopo un mese. Edema Interno assorbito", "2020-09-09 13:00:51.000000", "2020-09-09 13:00:51.000000"],
+        ["traumas", 2, 1, 2, "ROTTURA POLSO", "MEDIO", "frattura scomposta", "polso dx", "2015-01-04", null, "mattina", "Controllo dopo un mese", "2020-09-09 13:00:51.000000", "2020-09-09 13:00:51.000000"]
 
       ]
 }

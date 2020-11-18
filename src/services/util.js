@@ -279,7 +279,10 @@ const keyBy = (array, field, multiEntry = false) => {
   return res;
 };
 
+const distinct = (array, mapper) => [...new Set(array.map(mapper))].filter((i) => !!i);
+
 module.exports = {
   resolveCountryByCode,
   keyBy,
+  distinct,
 };

@@ -1,5 +1,5 @@
 {
-  "version": 52,
+  "version": 54,
   "defs": [
     {
       "table": "metas",
@@ -93,7 +93,7 @@
     },
     {
       "table": "location_register",
-      "columns": ["id", "name", "city", "address", "zip_code", "id_nation", "phone"],
+      "columns": ["id", "name", "city", "address", "zip_code", "id_nation", "phone", "lat", "lon"],
       "indexes": "&id"
     },
     {
@@ -138,8 +138,8 @@
     },
     {
       "table": "traumas",
-      "columns": ["id_person", "id_trauma", "name", "severity", "description", "body_impacted", "from", "to", "time", "note", "creation", "update"],
-      "indexes": "&[id_person+id_trauma+from],id_person,id_trauma,from"
+      "columns": ["id_care", "id_person", "id_trauma", "name", "severity", "description", "body_impacted", "from", "to", "time", "note", "creation", "update"],
+      "indexes": "++id_care,&[id_person+id_trauma+from],id_person,id_trauma,from"
     }
     ,
     {

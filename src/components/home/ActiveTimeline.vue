@@ -26,15 +26,23 @@
           <v-flex v-else-if="type === 'prescriptions'">
             <span class="text-h7">{{formatDate(item.from)}}</span>
             <br>
-            <strong>
-              {{item.medicine.name}} ({{item.medicine.active_principle}})
+            <strong class="text-capitalize">
+              {{item.medicine.name.toLowerCase()}}
+              ({{item.medicine.active_principle.toLowerCase()}})
             </strong>
-            <div class="caption">{{item.daily_frequency}}</div>
-            <div class="caption" v-if="item.disease">
-              Per il trattamento di: <strong>{{item.disease.name}}</strong>
+            <div class="caption text-capitalize">{{item.daily_frequency.toLowerCase()}}</div>
+            <div class="caption text-capitalize" v-if="item.disease">
+              Per il trattamento di: <strong>{{item.disease.def.name.toLowerCase()}}</strong>
             </div>
-            <div class="caption" v-else-if="item.allergy">
-              Per allergia: <strong>{{item.allergy.name}}</strong>
+            <div class="caption text-capitalize" v-else-if="item.allergy">
+              Per allergia: <strong>{{item.allergy.def.name.toLowerCase()}}</strong>
+            </div>
+            <div class="caption text-capitalize" v-else-if="item.trauma">
+              A seguito di: (Trauma) <strong>{{item.trauma.name.toLowerCase()}}</strong>
+            </div>
+            <div class="caption text-capitalize" v-else-if="item.intervention">
+              A seguito di: (Intervento)
+              <strong>{{item.intervention.def.name.toLowerCase()}}</strong>
             </div>
           </v-flex>
           <v-flex v-else-if="type === 'exams'">
@@ -91,21 +99,18 @@ export default {
   },
   methods: {
     formatDate: (value) => moment(value).format('DD MMM, YY'),
-    fetchData() {
-      let promise;
+    async fetchData() {
+      let response;
       if (this.type === 'diagnosis') {
-        promise = api.fetchPatientDiagnosis(this.userId);
+        response = await api.fetchPatientDiagnosis(this.userId);
       } else if (this.type === 'prescriptions') {
-        promise = api.fetchUserPrescriptions(this.userId);
+        response = await api.fetchUserPrescriptions(this.userId);
       } else if (this.type === 'exams') {
-        promise = api.fetchUserAllergies(this.userId);
+        response = await api.fetchUserAllergies(this.userId);
       }
-      promise
-        .then((response) => {
-          this.events = response.data
-            .filter((item) => item.to === null)
-            .sort(compareEvents('desc'));
-        });
+      this.events = response.data
+        .filter((item) => !item.to)
+        .sort(compareEvents('desc'));
     },
   },
   created() {

@@ -1,5 +1,5 @@
 import db from '@/services/database';
-import { keyBy } from '@/services/util';
+import { keyBy, distinct } from '@/services/util';
 
 const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
   db.register.where({ id: userId })
@@ -43,49 +43,68 @@ const fetchPatientDiagnosis = (userId) => {
     });
 };
 
-const fetchUserPrescriptions = (userId) => {
-  let prescriptions;
-  return db.medicines
-    .where({ id_person: userId })
-    .toArray()
-    .then((records) => {
-      prescriptions = records;
-      const medicineIds = new Set();
-      const diseaseIds = new Set();
-      const allergyIds = new Set();
-      records.forEach((record) => {
-        if (record.id_medicine && record.id_medicine !== '') {
-          medicineIds.add(parseInt(record.id_medicine, 10));
-        }
-        if (record.id_disease && record.id_disease !== '') {
-          diseaseIds.add(parseInt(record.id_disease, 10));
-        }
-        if (record.id_allergies && record.id_allergies !== '') {
-          allergyIds.add(parseInt(record.id_allergies, 10));
-        }
-        // eslint-disable-next-line no-param-reassign
-        record.to = !record.to || record.to === '' ? null : record.to;
-      });
-      return Promise.all([
-        db.medicine_register.where('id').anyOf([...medicineIds]).toArray(),
-        db.disease_register.where('id').anyOf([...diseaseIds]).toArray(),
-        db.allergy_register.where('id').anyOf([...allergyIds]).toArray(),
-      ]);
-    })
-    .then((values) => {
-      const [medicineDefs, diseaseDefs, allergyDefs] = values;
-      const idToMedicineDefs = keyBy(medicineDefs, 'id');
-      const idToDiseaseDefs = keyBy(diseaseDefs, 'id');
-      const idToAllergyDefs = keyBy(allergyDefs, 'id');
-      return {
-        data: prescriptions.map((item) => ({
-          ...item,
-          medicine: idToMedicineDefs[item.id_medicine],
-          disease: idToDiseaseDefs[item.id_disease],
-          allergy: idToAllergyDefs[item.id_allergies],
-        })),
-      };
-    });
+const oneToOneJoin = async (left, right, leftField, rightField, fieldName, keyByField) => {
+  const sourceRecords = await left.toArray();
+  const defKeys = [...new Set(sourceRecords.map((item) => item[leftField]))];
+  const defs = await right.where(rightField).anyOf(defKeys).toArray();
+  const keyedRightRecords = keyBy(defs, rightField);
+  const result = sourceRecords.map((item) => {
+    const copy = { ...item };
+    copy[fieldName] = keyedRightRecords[item[leftField]];
+    return copy;
+  });
+  if (keyByField) {
+    return keyBy(result, keyByField);
+  }
+  return result;
+};
+
+const fetchUserPrescriptions = async (userId) => {
+  const records = await oneToOneJoin(
+    db.medicines.where({ id_person: userId }),
+    db.medicine_register,
+    'id_medicine',
+    'id',
+    'medicine',
+  );
+  const diseaseIds = distinct(records, (item) => item.id_disease);
+  const diseases = await oneToOneJoin(
+    db.diseases.where('id_care').anyOf(diseaseIds),
+    db.disease_register,
+    'id_disease',
+    'id',
+    'def',
+    'id_care',
+  );
+  const allergyIds = distinct(records, (item) => item.id_allergy);
+  const allergies = await oneToOneJoin(
+    db.allergies.where('id_care').anyOf(allergyIds),
+    db.allergy_register,
+    'id_allergy',
+    'id',
+    'def',
+    'id_care',
+  );
+  const interventionIds = distinct(records, (item) => item.id_intervention);
+  const interventions = await oneToOneJoin(
+    db.interventions.where('id_care').anyOf(interventionIds),
+    db.intervention_register,
+    'id_intervention',
+    'id',
+    'def',
+    'id_care',
+  );
+  const traumasIds = distinct(records, (item) => item.id_trauma);
+  const traumas = keyBy(await db.traumas.bulkGet(traumasIds), 'id_care');
+  return {
+    data: records.map((item) => ({
+      ...item,
+      disease: diseases[item.id_disease],
+      allergy: allergies[item.id_allergy],
+      intervention: interventions[item.id_intervention],
+      trauma: traumas[item.id_trauma],
+    })),
+  };
 };
 
 const fetchUserContacts = (userId) => db.contact

@@ -17,11 +17,7 @@
         <span class="headline">Aggiungi Prescrizione</span>
       </v-card-title>
       <v-card-text>
-        <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
-        >
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-select
             :items="reasons"
             item-text="name"
@@ -38,32 +34,28 @@
               :items="allergyList"
               label="Allergia"
               item-text="name"
-              prepend-icon="mdi-asterisk"
-            />
+              prepend-icon="mdi-asterisk"/>
             <v-combobox
               v-if="reason.value === 'trauma'"
               v-model="trauma"
               :items="traumaList"
               label="Trauma"
               item-text="name"
-              prepend-icon="mdi-bandage"
-            />
+              prepend-icon="mdi-bandage"/>
             <v-combobox
               v-if="reason.value === 'intervention'"
               v-model="intervention"
               :items="interventionList"
               label="Intervento"
               item-text="name"
-              prepend-icon="mdi-hospital-building"
-            />
+              prepend-icon="mdi-hospital-building"/>
             <v-combobox
               v-if="reason.value === 'disease'"
               v-model="disease"
               :items="diseaseList"
               label="Diagnosi"
               item-text="name"
-              prepend-icon="mdi-medical-bag"
-            />
+              prepend-icon="mdi-medical-bag"/>
           </div>
           <div v-if="disease || allergy || intervention || trauma">
             <AutocompleteSearch
@@ -71,16 +63,14 @@
               label="Farmaco"
               :required="true"
               :table="database.medicine_register"
-              v-on:change="drug = $event"
-            />
+              v-on:change="drug = $event"/>
             <v-select
               :items="frequencyList"
               item-text="value"
-              label="Frquenza"
+              label="Frequenza"
               v-model="daily_frequency"
               prepend-icon="mdi-history"
-              required
-            />
+              required/>
             <v-menu
               v-model="fromDialog"
               :close-on-content-click="false"
@@ -269,23 +259,14 @@ export default {
       this.intervention = null;
     },
     async save() {
-      // const existing = await db.medicines.get({
-      //   id_person: this.user.id,
-      //   id_medicine: this.drug.id,
-      //   id_trauma: this.trauma ? this.trauma.id_trauma : null,
-      //   id_disease: this.disease ? this.disease.id_disease : null,
-      //   id_intervention: this.intervention ? this.intervention.id_intervention : null,
-      //   id_allergies: this.allergy ? this.allergy.id_allergy : null,
-      //   from: this.from,
-      // });
       await db.medicines
         .put({
           id_person: this.user.id,
           id_medicine: this.drug.id,
-          id_trauma: this.trauma ? this.trauma.id : null,
-          id_disease: this.disease ? this.disease.id : null,
-          id_intervention: this.intervention ? this.intervention.id : null,
-          id_allergies: this.allergy ? this.allergy.id : null,
+          id_trauma: this.trauma ? this.trauma.id_trauma : null,
+          id_disease: this.disease ? this.disease.id_care : null,
+          id_intervention: this.intervention ? this.intervention.id_care : null,
+          id_allergies: this.allergy ? this.allergy.id_care : null,
           daily_frequency: this.daily_frequency,
           dosage: this.dosage,
           unit: this.unit,
