@@ -6,7 +6,7 @@
       :items="entries"
       :search-input.sync="search"
       :item-text="searchField"
-      :label="label"
+      :label="`${label}${required ? ' *' : ''}`"
       prepend-icon="mdi-magnify"
       return-object
       :rules="[v => !!v && required  || this.invalidHint]"
@@ -69,6 +69,14 @@ export default {
     };
   },
   methods: {
+    reset() {
+      this.valid = false;
+      this.dialog = false;
+      this.entries = [];
+      this.isLoading = false;
+      this.search = null;
+      this.model = null;
+    },
     handleRecordCreation(record) {
       this.entries = [record];
       this.model = { ...record };

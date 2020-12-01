@@ -2,12 +2,7 @@
   <v-dialog v-model="dialog" max-width="600px">
     <template v-slot:activator="{ on, attrs }">
       <div class="my-5 light-blue--text">
-        <v-btn
-          color="primary lighten-1"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
+        <v-btn color="primary lighten-1" dark v-bind="attrs" v-on="on">
          {{buttonText}}
         </v-btn>
       </div>
@@ -20,14 +15,14 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-text-field label="Email" required type="email" v-model="email"></v-text-field>
+              <v-text-field label="Email" required type="email" v-model="email"/>
             </v-col>
             <v-col cols="12">
               <v-text-field
                 label="Password"
                 type="password"
                 required
-                v-model="password"></v-text-field>
+                v-model="password"/>
             </v-col>
           </v-row>
         </v-container>

@@ -1,30 +1,18 @@
 <template>
   <v-container fluid class="pa-0" v-if="tabs">
     <v-toolbar>
-      <v-tabs
-        v-model="tab"
-        centered
-        icons-and-text
-        grow
-        md12
-        outlined
-        hide-slider
+      <v-tabs v-model="tab" centered icons-and-text
+        grow md12 outlined hide-slider
         active-class="active-lab-exam-tab">
-        <v-tab
-          :append="true"
-          v-for="tab in tabs"
-          :key="tab.key"
-          :href="`#t-${tab.key}`">
+        <v-tab :append="true" v-for="tab in tabs" :key="tab.key" :href="`#t-${tab.key}`">
           {{tab.name}}
         </v-tab>
       </v-tabs>
     </v-toolbar>
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="tab in tabs" :key="tab.key"  :value="`t-${tab.key}`">
-        <LabExamCard
-          :user-id="user.id"
-          :category="tab.category"
-          :macro_category="tab.macro_category"/>
+    <v-tabs-items v-model="tab"  class="mt-10" >
+      <v-tab-item v-for="tab in tabs" :key="tab.key"  :value="`t-${tab.key}`" class="mt-10" >
+        <LabExamCard :user-id="user.id" :category="tab.category"
+                     :macro_category="tab.macro_category"/>
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -32,6 +20,7 @@
 
 <script>
 import LabExamCard from '@/components/exams/lab/LabExamCard.vue';
+import api from '@/services/api';
 
 const labExamsTabs = [
   {
@@ -53,8 +42,15 @@ const labExamsTabs = [
     macro_category: 'LABORATORIO',
   },
   {
-    name: 'Test',
-    key: 'tests',
+    name: 'Liquido Seminale',
+    key: 'seminal',
+    category: 'LIQUIDO SEMINALE',
+    macro_category: 'LABORATORIO ALTRO',
+    rules: [(userProfile) => userProfile.sex === 'M'],
+  },
+  {
+    name: 'Altro',
+    key: 'lab_other',
     macro_category: 'LABORATORIO ALTRO',
   },
 ];
@@ -62,10 +58,22 @@ const labExamsTabs = [
 export default {
   name: 'LabExam',
   components: { LabExamCard },
+  methods: {
+    async filterTabs() {
+      const userProfile = await api.fetchPatientProfile(this.user.id);
+      this.tabs = labExamsTabs.filter((tab) => !tab.rules || tab.rules
+        .map((r) => r(userProfile))
+        .reduce((acc, value) => acc && value));
+      this.tab = `t-${this.tabs[0].key}`;
+    },
+  },
+  created() {
+    this.filterTabs();
+  },
   data() {
     return {
-      tabs: labExamsTabs,
-      tab: `t-${labExamsTabs[0].key}`,
+      tabs: null,
+      tab: null,
       user: this.$store.state.user,
     };
   },

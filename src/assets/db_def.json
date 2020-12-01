@@ -1,5 +1,5 @@
 {
-  "version": 54,
+  "version": 58,
   "defs": [
     {
       "table": "metas",
@@ -58,13 +58,18 @@
     },
     {
       "table": "exams",
-      "columns": ["id_person", "id_care", "id_exam", "diagnostic_question", "note", "body_impacted", "from", "to", "time", "id_location", "id_doctor", "creation", "update", "requisites", "receipit_code", "highlight", "value", "unit"],
-      "indexes": "++id_care,&[id_person+id_exam+time],id_person,id_exam,time"
+      "columns": ["id_person", "id_care", "id_exam", "category", "macro_category", "diagnostic_question", "note", "body_impacted", "from", "to", "time", "id_location", "id_doctor", "creation", "update", "requisites", "receipit_code"],
+      "indexes": "++id_care,[id_person+category+macro_category],id_person,category,macro_category"
+    },
+    {
+      "table": "exam_values",
+      "columns": ["id", "id_exam", "id_exam_type", "highlight", "value", "unit", "creation", "update"],
+      "indexes": "++id,&[id_exam+id_exam_type],id_exam"
     },
     {
       "table": "exam_register",
       "columns": ["id", "category", "name", "sex", "macro_category","id_person"],
-      "indexes": "++id,category,macro_category"
+      "indexes": "++id,[macro_category+category],category,macro_category"
     },
     {
       "table": "exemption_register",

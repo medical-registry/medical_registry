@@ -1,71 +1,58 @@
 <template>
-  <v-container fluid class="pa-0" v-if="tabs">
-    <v-toolbar>
-      <v-tabs
-        v-model="tab"
-        centered
-        icons-and-text
-        grow
-        md12
-        outlined
-        hide-slider
-        active-class="active-lab-exam-tab">
-        <v-tab
-          :append="true"
-          v-for="tab in tabs"
-          :key="tab.key"
-          :href="`#t-${tab.key}`">
-          {{tab.name}}
-        </v-tab>
-      </v-tabs>
-    </v-toolbar>
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="tab in tabs" :key="tab.key"  :value="`t-${tab.key}`">
-        <LabExamCard
-          :user-id="user.id"
-          :category="tab.category"
-          :macro_category="tab.macro_category"/>
-      </v-tab-item>
-    </v-tabs-items>
+  <v-container fluid v-if="tabs" class="pa-0">
+      <v-toolbar color="blue lighten-5" flat elevation="2">
+        <template v-slot:default>
+          <v-tabs v-model="tab" centered slider-color="blue" grow>
+            <v-tab v-for="(tab, key, i) in tabs" :key="i" :href="`#tab-${i}`">
+              {{tab.macro_category}}
+            </v-tab>
+          </v-tabs>
+        </template>
+      </v-toolbar>
+      <v-tabs-items v-model="tab">
+        <v-tab-item v-for="(tab, key, i) in tabs" :key="i" :value="`tab-${i}`">
+          <NonLabExams :section="tab" />
+        </v-tab-item>
+      </v-tabs-items>
   </v-container>
 </template>
 
 <script>
-import LabExamCard from '@/components/exams/lab/LabExamCard.vue';
-
-const labExamsTabs = [
-  {
-    name: 'Sangue',
-    key: 'blood',
-    category: 'SANGUE',
-    macro_category: 'LABORATORIO',
-  },
-  {
-    name: 'Urine',
-    key: 'urine',
-    category: 'URINE',
-    macro_category: 'LABORATORIO',
-  },
-  {
-    name: 'Feci',
-    key: 'fecis',
-    category: 'FECI',
-    macro_category: 'LABORATORIO',
-  },
-  {
-    name: 'Test',
-    key: 'tests',
-    macro_category: 'LABORATORIO ALTRO',
-  },
-];
+import db from '@/services/database';
+import NonLabExams from '@/components/exams/non-lab/NonLabExams.vue';
 
 export default {
   name: 'LabExam',
-  components: { LabExamCard },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { NonLabExams },
+  created() {
+    this.fetchCategories();
+  },
+  methods: {
+    async fetchCategories() {
+      const exams = await db.exam_register.where('macro_category')
+        .noneOf(['LABORATORIO', 'LABORATORIO ALTRO'])
+        .toArray();
+      this.tabs = exams
+        .map((ex) => ({
+          macro_category: ex.macro_category,
+          category: ex.category,
+          key: ex.macro_category.toLowerCase().replace(' ', '_'),
+        }))
+        .reduce((acc, item) => {
+          if (acc && !acc[item.key]) {
+            acc[item.key] = { macro_category: item.macro_category, categories: [item.category] };
+          } else if (acc[item.key].categories.indexOf(item.category) < 0) {
+            acc[item.key].categories.push(item.category);
+          }
+          return acc;
+        }, {});
+    },
+  },
   data() {
     return {
-      tabs: labExamsTabs,
-      tab: `t-${labExamsTabs[0].key}`,
+      tabs: null,
+      tab: null,
       user: this.$store.state.user,
     };
   },
@@ -74,6 +61,5 @@ export default {
 
 <style scoped>
   .active-lab-exam-tab {
-    background-color: #BBDEFB;
   }
 </style>

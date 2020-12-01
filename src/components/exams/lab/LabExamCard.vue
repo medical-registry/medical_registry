@@ -1,87 +1,35 @@
 <template>
-  <v-card elevation="0">
-    <AddExamDialog
-      v-if="units"
-      :macro_category="macro_category"
-      :category="category"
-      :units="units"
-      :user_id="userId"
-      v-on:created="fetchExams"
-      :addButtonAlign="timelineItems && timelineItems.length> 0 ? 'text-right' : 'text-center'"/>
+  <v-card elevation="0" class="mt-10">
+    <v-container :class="timelineItems && timelineItems.length > 0 ? 'text-right': 'text-center'">
+      <AddExamDialog
+        v-if="units"
+        :macro_category="macro_category"
+        :category="category"
+        :units="units"
+        :user_id="userId"
+        v-on:created="fetchExams"
+        :addButtonAlign="timelineItems && timelineItems.length> 0 ? 'text-right' : 'text-center'"/>
+    </v-container>
     <v-container v-if="timelineItems && Object.keys(timelineItems).length>0">
-      <v-timeline  align-top dense>
-        <v-timeline-item v-for="group in timelineItems" :key="group.date" small>
-          <v-card class="elevation-3">
-            <v-card-title class="headline capitalized" v-if="!group.values[0].to">
-              {{formatDate(group.values[0].from)}}
-              {{group.values[0].time? group.values[0].time : ''}}
-            </v-card-title>
-            <v-card-title class="headline capitalized" v-else>
-              Dal {{formatDate(group.values[0].from)}}
-              al {{formatDate(group.values[0].to)}}
-            </v-card-title>
-            <v-card-text>
-              <span class="capitalized" v-if="macro_category === 'LABORATORIO ALTRO'">
-                {{group.values[0].exam.category}} <br/>
-              </span>
-              <span v-if="group.values[0].diagnostic_question">
-                Quesito:
-                <span  class="capitalized">
-                  {{group.values[0].diagnostic_question.toLowerCase()}}
-                </span>
-              </span>
-              <br/>
-              <p v-if="group.values[0].note">
-                <b v-if="macro_category !== 'LABORATORIO ALTRO'">Note</b>
-                <b v-if="macro_category === 'LABORATORIO ALTRO'">Referto</b>
-                <br/>
-                <span>
-                  {{group.values[0].note}}
-                </span>
-              </p>
-              <v-simple-table v-if="macro_category !== 'LABORATORIO ALTRO'">
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left">Esame</th>
-                      <th class="text-left">Valore</th>
-                      <th class="text-left">Unità</th>
-                      <th colspan="2"/>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <EditableExamValue
-                      v-for="item in group.values"
-                      :key="item.id_care"
-                      :units="units"
-                      :category="category"
-                      :macro_category="macro_category"
+      <v-timeline  align-top dense v-if="noValueExamView">
+        <LabExamItem  v-for="group in timelineItems" :key="group.id_care"
+                      :group="group"
                       v-on:delete="fetchExams"
-                      :item="item"
-                      :user-id="userId"/>
-                    <EditableExamValue
-                      v-if="adding"
-                      :units="units"
+                      v-on:change="fetchExams"
                       :category="category"
                       :macro_category="macro_category"
-                      :parent="group.values[0]"
-                      v-on:update="handleNewItem"
+                      :units="units"
                       :user-id="userId"/>
-                  </tbody>
-                  <tfoot>
-                    <tr v-if="!adding">
-                      <td colspan="4" class="text-center">
-                        <v-btn color="primary" @click="adding=true" fab x-small dark elevation="0">
-                          <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </template>
-              </v-simple-table>
-            </v-card-text>
-          </v-card>
-        </v-timeline-item>
+      </v-timeline>
+      <v-timeline  align-top dense v-else>
+        <LabOtherExamItem v-for="group in timelineItems" :key="group.id_care"
+                      :group="group"
+                      v-on:delete="fetchExams"
+                      v-on:change="fetchExams"
+                      :category="category"
+                      :macro_category="macro_category"
+                      :units="units"
+                      :user-id="userId"/>
       </v-timeline>
     </v-container>
     <v-progress-linear v-else-if="!timelineItems" indeterminate />
@@ -89,15 +37,16 @@
 </template>
 
 <script>
-import db from '@/services/database';
-import { keyBy } from '@/services/util';
 import moment from 'moment';
+import db from '@/services/database';
+import api from '@/services/api';
 import AddExamDialog from '@/components/exams/lab/AddExamDialog.vue';
-import EditableExamValue from '@/components/exams/lab/EditableExamValue.vue';
+import LabExamItem from '@/components/exams/lab/LabExamItem.vue';
+import LabOtherExamItem from '@/components/exams/lab/LabOtherExamItem.vue';
 
 export default {
   name: 'LabExamCard',
-  components: { EditableExamValue, AddExamDialog },
+  components: { LabExamItem, AddExamDialog, LabOtherExamItem },
   props: {
     category: null,
     macro_category: null,
@@ -113,42 +62,12 @@ export default {
       const records = await db.choices.filter((i) => i.category === 'MISURA').toArray();
       this.units = records.map((choice) => choice.value);
     },
-    async handleNewItem() {
-      await this.fetchExams();
-      this.adding = false;
-    },
     async fetchExams() {
-      const userExams = await db.exams.where({ id_person: this.userId }).toArray();
-      const examIds = [...new Set(userExams.map((item) => item.id_exam).filter((id) => !!id))];
-      const examDefinitions = await db.exam_register.bulkGet(examIds);
-      const keyedExamDefinitions = keyBy(examDefinitions, 'id');
-      const examsGroups = {};
-      userExams.forEach((item) => {
-        const examDef = keyedExamDefinitions[item.id_exam];
-        if (!examDef
-          || (examDef.category !== this.category && this.macro_category !== 'LABORATORIO ALTRO')
-          || examDef.macro_category !== this.macro_category) {
-          return;
-        }
-        const modItem = {
-          ...item,
-          exam: keyedExamDefinitions[item.id_exam],
-          highlight: item.highlight === 1 || item.highlight === '1' || item.highlight === true,
-        };
-        if (!examsGroups[modItem.from]) {
-          examsGroups[modItem.from] = [];
-        }
-        examsGroups[modItem.from].push(modItem);
-      });
-      const res = [];
-      Object.keys(examsGroups)
-        .forEach((k) => {
-          examsGroups[k]
-            .sort((a, b) => new Date(a.creation).getTime() - new Date(b.creation).getTime());
-          res.push({ date: k, values: examsGroups[k] });
-        });
-      res.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      this.timelineItems = res;
+      const userExams = await api.fetchUserExams(this.userId, this.noValueExamView);
+      this.timelineItems = userExams
+        .filter((item) => (!this.category || this.category === item.category)
+          && item.macro_category === this.macro_category)
+        .sort((a, b) => new Date(b.from).getTime() - new Date(a.from).getTime());
     },
   },
   data() {
@@ -156,12 +75,9 @@ export default {
       adding: false,
       timelineItems: null,
       database: db,
+      noValueExamView: this.macro_category !== 'LABORATORIO ALTRO',
       units: [],
     };
   },
 };
 </script>
-
-<style scoped>
-
-</style>

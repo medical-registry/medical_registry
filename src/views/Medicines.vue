@@ -1,61 +1,59 @@
 <template>
-
-    <v-card elevation="0">
-      <v-card-title>Farmaci </v-card-title>
-      <v-timeline  align-top dense>
-        <v-timeline-item v-for="item in items" :key="item.id_care" small>
-          <v-card class="elevation-3">
-            <v-card-title class="text-center">{{item.medicine.name}}</v-card-title>
-            <v-card-title v-if="!item.to" class="headline capitalized">{{formatDate(item.from)}}
-            </v-card-title>
-            <v-card-title v-else class="headline capitalized">Dal {{formatDate(item.from)}}
-              al {{formatDate(item.to)}}
-            </v-card-title>
-            <v-card-text>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                          <tr>
-                            <th class="text-left" style="width: 500px">Causa</th>
-                            <th v-if="item.dosage" class="text-left">Dosaggio</th>
-                            <th v-if="item.unit" class="text-left">
-                                Unità</th>
-                             <th v-if="item.daily_frequency" class="text-left">
-                                 Frequenza</th>
-                             <th v-if="item.body_impacted" class="text-left">
-                                 Parte del corpo</th>
-                            <th colspan="2"/>
-                          </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td v-if="item.trauma">{{item.trauma.name}} (Trauma)</td>
-                        <td v-if="item.disease">{{item.diseaseRegister.name}} (Patologia)</td>
-                        <td v-if="item.allergyRegister">{{item.allergyRegister.name}}
-                            (Allergia)</td>
-                        <td v-if="item.intervention">{{item.intervention.name}} (Intervento)</td>
-                        <td v-if="item.dosage">{{item.dosage}}</td>
-                        <td v-if="item.unit">{{item.unit}}</td>
-                        <td v-if="item.daily_frequency">{{item.daily_frequency}}</td>
-                        <td v-if="item.body_impacted">
-                            {{item.body_impacted}}</td>
-                        <td colspan="4"/>
-                        </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-            </v-card-text>
-          </v-card>
-        </v-timeline-item>
-      </v-timeline>
-        <AutocompleteSearch
-            invalid-hint="Seleziona Intervento"
-            label="Intervento"
-            :table="database.allergy_register"
-        />
-
-    </v-card>
-
+  <v-card elevation="0">
+    <v-card-title>Farmaci </v-card-title>
+    <v-timeline  align-top dense>
+      <v-timeline-item v-for="item in items" :key="item.id_care" small>
+        <v-card class="elevation-3">
+          <v-card-title class="text-center">{{item.medicine.name}}</v-card-title>
+          <v-card-title v-if="!item.to" class="headline capitalized">
+            {{formatDate(item.from)}}
+          </v-card-title>
+          <v-card-title v-else class="headline capitalized">
+            Dal {{formatDate(item.from)}}
+            al {{formatDate(item.to)}}
+          </v-card-title>
+          <v-card-text>
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left" style="width: 500px">Causa</th>
+                    <th v-if="item.dosage" class="text-left">Dosaggio</th>
+                    <th v-if="item.unit" class="text-left">
+                        Unità</th>
+                     <th v-if="item.daily_frequency" class="text-left">
+                         Frequenza</th>
+                     <th v-if="item.body_impacted" class="text-left">
+                         Parte del corpo</th>
+                    <th colspan="2"/>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td v-if="item.trauma">{{item.trauma.name}} (Trauma)</td>
+                    <td v-if="item.disease">{{item.diseaseRegister.name}} (Patologia)</td>
+                    <td v-if="item.allergyRegister">{{item.allergyRegister.name}}
+                        (Allergia)</td>
+                    <td v-if="item.intervention">{{item.intervention.name}} (Intervento)</td>
+                    <td v-if="item.dosage">{{item.dosage}}</td>
+                    <td v-if="item.unit">{{item.unit}}</td>
+                    <td v-if="item.daily_frequency">{{item.daily_frequency}}</td>
+                    <td v-if="item.body_impacted">
+                        {{item.body_impacted}}</td>
+                    <td colspan="4"/>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-card-text>
+        </v-card>
+      </v-timeline-item>
+    </v-timeline>
+      <AutocompleteSearch
+          invalid-hint="Seleziona Intervento"
+          label="Intervento"
+          :table="database.allergy_register"/>
+  </v-card>
 </template>
 
 <script>

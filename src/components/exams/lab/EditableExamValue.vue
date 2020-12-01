@@ -1,14 +1,16 @@
 <template>
-  <tr :class="exam.highlight ?'font-weight-bold':''"
-      v-if="!editing" :key="exam.id_care">
-    <td class="text-capitalize py-5">{{ (def ? def.name : '').toLowerCase() }}</td>
+  <tr :class="exam.highlight ?'font-weight-bold':''" v-if="!editing">
+    <td class="text-capitalize py-5 pl-0">{{ (def ? def.name : '').toLowerCase() }}</td>
     <td class="py-20">{{ exam.value }}</td>
     <td class="py-26">{{ exam.unit }}</td>
     <td class="text-right py-5" colspan="2">
       <v-btn color="primary" fab x-small dark elevation="0" class="mr-2" @click="editing=true">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <ValueChartDialog :exam-id="exam.id_exam" :person-id="userId" :exam-name="def.name"/>
+      <ValueChartDialog
+        :exam-id="exam.def.id"
+        :exam-name="def.name"
+        :person-id="parent.id_person"/>
       <v-btn color="error" fab x-small dark elevation="0" @click="deleteExam">
         <v-icon>mdi-close</v-icon>
       </v-btn>
@@ -22,7 +24,7 @@
         :required="true"
         :table="database.exam_register"
         :filters="[(a) => a.category === this.category]"
-        v-on:change="updateExam"
+        v-on:change="updateExamDef"
         :initial-value="def"
         :default-creation-values="{category, macro_category}"
       />
@@ -53,59 +55,53 @@ import moment from 'moment';
 import AutocompleteSearch from '@/components/AutocompleteSearch.vue';
 import ValueChartDialog from '@/components/exams/lab/ValueChartDialog.vue';
 
+const baseModel = {
+  highlight: false,
+  id_exam_type: null,
+  unit: null,
+  value: null,
+};
+
 export default {
   name: 'EditableExamValue',
   components: { ValueChartDialog, AutocompleteSearch },
   props: {
     item: null,
-    category: null,
-    units: null,
     parent: null,
-    macro_category: null,
-    userId: null,
+    units: null,
   },
   methods: {
     async deleteExam() {
-      await this.database.exams.where({ id_care: this.exam.id_care }).delete();
+      await this.database.exam_values.where({ id: this.item.id }).delete();
       this.$emit('delete');
     },
     async save() {
-      if (this.parent) {
+      this.exam.update = moment().format();
+      if (!this.item) {
         this.exam.creation = moment().format();
       }
-      this.exam.update = moment().format();
-      if (this.exam.id_care) {
-        await this.database.exams.update(this.exam.id_care, this.exam);
-      } else {
-        await this.database.exams.put(this.exam);
-      }
+      await this.database.exam_values.put(this.exam);
       this.editing = false;
       this.$emit('update');
     },
-    updateExam(def) {
+    updateExamDef(def) {
       if (!def) { return; }
       this.def = def;
-      this.exam.id_exam = def.id;
-      this.exam.name = def.name;
+      this.exam.id_exam_type = def.id;
     },
   },
   data() {
     let data;
-    if (this.parent) {
-      data = { ...this.parent };
-      delete data.id_care;
-      delete data.id_exam;
-      delete data.highlight;
-      delete data.unit;
-      delete data.name;
-      delete data.value;
+    if (!this.item) {
+      data = { ...baseModel, id_exam: this.parent.id_care };
     } else {
       data = { ...this.item };
     }
-    delete data.exam;
     return {
-      editing: this.parent !== undefined,
-      def: this.item ? this.item.exam : null,
+      editing: !this.item,
+      def: this.item ? this.item.def : null,
+      category: this.parent.category,
+      macro_category: this.parent.macro_category,
       database: db,
       exam: data,
     };

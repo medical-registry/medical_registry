@@ -1,9 +1,5 @@
 <template>
-  <v-navigation-drawer
-    v-model="isOpen"
-    app
-    disable-resize-watcher
-  >
+  <v-navigation-drawer v-model="isOpen" app disable-resize-watcher>
     <v-list dense>
       <div v-for="route in drawerItems" :key="route.path">
         <v-list-item :to="route.path" @click.stop="close">
@@ -54,9 +50,7 @@ export default {
   },
   methods: {
     close() {
-      if (window.innerWidth < 1264) {
-        this.$store.commit('setLeftDrawer', false);
-      }
+      this.$store.commit('setLeftDrawer', false);
     },
     logout() {
       this.$store.commit('setUser', null);

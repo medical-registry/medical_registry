@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import db from '@/services/database';
 import LineChart from '@/components/exams/lab/LineChart';
+import api from '@/services/api';
 
 export default {
   name: 'ValueChartDialog',
@@ -31,8 +31,22 @@ export default {
   },
   methods: {
     async loadData() {
-      const filter = { id_person: this.personId, id_exam: this.examId };
-      const res = await db.exams.where(filter).toArray();
+      const exams = await api.fetchUserExams(this.userId, true);
+      const res = exams
+        .flatMap((group) => {
+          if (group.values) {
+            return group.values
+              .filter((item) => item.id_exam_type === this.examId)
+              .map((item) => ({
+                from: group.from,
+                value: item.value,
+                highlight: item.highlight,
+              }));
+          }
+          return null;
+        })
+        .filter((item) => !!item)
+        .sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime());
       this.dataPoints = {
         labels: res.map((entry) => entry.from),
         datasets: [
@@ -42,7 +56,6 @@ export default {
           },
         ],
       };
-      // this.dataPoints = res.map((entry) => ({ x: entry.from, y: entry.value }));
     },
   },
   data() {

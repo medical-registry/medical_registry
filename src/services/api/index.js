@@ -1,16 +1,7 @@
 import db from '@/services/database';
 import { keyBy, distinct } from '@/services/util';
 
-const fetchPatientProfile = (userId) => new Promise((resolve, reject) => {
-  db.register.where({ id: userId })
-    .first((user) => {
-      if (!user) {
-        reject(new Error(`no entry in 'register' for id: ${userId}`));
-      } else {
-        resolve(user);
-      }
-    });
-});
+const fetchPatientProfile = async (userId) => db.register.where({ id: userId }).first();
 
 const fetchPatientDiagnosis = (userId) => {
   const result = [];
@@ -45,7 +36,7 @@ const fetchPatientDiagnosis = (userId) => {
 
 const oneToOneJoin = async (left, right, leftField, rightField, fieldName, keyByField) => {
   const sourceRecords = await left.toArray();
-  const defKeys = [...new Set(sourceRecords.map((item) => item[leftField]))];
+  const defKeys = distinct(sourceRecords, (item) => item[leftField]);
   const defs = await right.where(rightField).anyOf(defKeys).toArray();
   const keyedRightRecords = keyBy(defs, rightField);
   const result = sourceRecords.map((item) => {
@@ -124,9 +115,31 @@ const fetchUserAllergies = async (userId) => {
   }));
 };
 
-const fetchUserExams = async (userId) => {
-  const exams = await db.exams.where({ id_person: userId }).toArray();
-  return exams;
+const fetchUserExams = async (userId, withValues = false) => {
+  const userExams = await db.exams.where({ id_person: userId }).toArray();
+  if (withValues) {
+    const examIds = distinct(userExams, (item) => item.id_care);
+    const values = await oneToOneJoin(
+      db.exam_values.where('id_exam').anyOf(examIds),
+      db.exam_register,
+      'id_exam_type',
+      'id',
+      'def',
+    );
+    const keyedValues = keyBy(values, 'id_exam', true);
+    return userExams
+      .map((item) => ({
+        ...item,
+        values: keyedValues[item.id_care],
+      }));
+  }
+  const defsId = distinct(userExams, (item) => item.id_exam);
+  const defs = await db.exam_register.where('id').anyOf(defsId).toArray();
+  const keyedDefs = keyBy(defs, 'id');
+  return userExams.map((item) => ({
+    ...item,
+    def: keyedDefs[item.id_exam],
+  }));
 };
 
 const login = (email, password) => new Promise((resolve, reject) => {
@@ -154,4 +167,5 @@ export default {
   fetchUserAllergies,
   login,
   fetchUserExams,
+  oneToOneJoin,
 };
