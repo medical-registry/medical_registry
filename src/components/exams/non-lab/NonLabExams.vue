@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="section" class="pa-0 pt-0 pb-10" fluid>
-    <v-tabs vertical color="primary" class="pa-0 pl-10">
-      <v-container style="border-right: 1px solid lightgrey" class="py-12 pl-0">
+    <v-tabs vertical color="primary" class="pa-0 pl-10" v-model="tab">
+      <v-container  class="py-12 pl-0 vertical-category-wrapper">
         <v-tab v-for="(category, i) in section.categories" :key="i"
                class="non-lab-category-tab"
                :href="`#tab-${section.key}-${i}`">
@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      tab: null,
+      tab: `tab-${this.section.key}-0`,
     };
   },
 };
@@ -43,5 +43,10 @@ export default {
 }
 .non-lab-category-tab {
   justify-content: start;
+}
+.vertical-category-wrapper {
+  border-right: 1px solid lightgrey;
+  min-height: 350px;
+  min-width: 250px;
 }
 </style>

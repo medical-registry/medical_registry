@@ -269,8 +269,10 @@ export default {
       return formValues;
     },
     async fetchCategories() {
+      this.userProfile = await db.register.get(this.user_id);
       this.examsTypes = await db.exam_register
         .where({ macro_category: this.macro_category, category: this.category })
+        .and((exam) => exam.sex === this.userProfile.sex || exam.sex === 'A')
         .toArray();
       this.examsTypes.sort((a, b) => a.name.localeCompare(b.name));
     },
