@@ -218,7 +218,9 @@ export default {
     },
     cancel() {
       this.dialog = false;
-      this.$refs.form.reset();
+      if (!this.editing) {
+        this.$refs.form.reset();
+      }
     },
     updateExamDef(def) {
       if (!def) { return; }
@@ -262,7 +264,6 @@ export default {
       const res = await this.database.exams.get(id);
       if (this.editing) {
         this.$emit('updated', res);
-        this.$refs.form.reset();
         this.dialog = false;
       } else {
         this.$emit('created', res);

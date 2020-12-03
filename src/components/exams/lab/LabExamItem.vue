@@ -27,13 +27,17 @@
         </v-row>
       </v-card-title>
       <v-card-text>
-        <span v-if="group.diagnostic_question">
+        <p v-if="group.diagnostic_question">
           <strong>Quesito:</strong>
           <span class="capitalized">
             {{group.diagnostic_question.toLowerCase()}}
           </span>
-        </span>
-        <br/>
+        </p>
+        <p v-if="group.requisites">
+          <strong>Requisiti:</strong>
+          <span>{{group.requisites}}</span>
+          <br/>
+        </p>
         <p v-if="group.note">
           <strong>Note</strong>
           <br/>
@@ -42,8 +46,8 @@
         <v-simple-table class="mt-5">
           <template v-slot:default>
             <thead>
-              <tr>
-                <th class="text-left pl-0">Parametro</th>
+              <tr class="px-3">
+                <th class="text-left">Parametro</th>
                 <th class="text-left">Valore</th>
                 <th class="text-left">Unità</th>
                 <th colspan="2"/>
@@ -62,13 +66,16 @@
                 v-if="adding"
                 :units="units"
                 :parent="group"
-                v-on:update="handleNewItem"/>
+                v-on:update="handleNewItem"
+                v-on:cancel="adding = false"
+              />
             </tbody>
             <tfoot>
               <tr v-if="!adding">
                 <td colspan="4" class="text-center">
                   <v-btn color="primary"
-                    @click="adding=true" fab x-small dark elevation="0" class="my-6">
+                    @click="adding=true" fab x-small dark elevation="0"
+                    :class="group.values && group.values.length>0? 'my-0': 'my-5'">
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </td>

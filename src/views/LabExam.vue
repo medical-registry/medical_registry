@@ -45,7 +45,7 @@ const labExamsTabs = [
     name: 'Liquido Seminale',
     key: 'seminal',
     category: 'LIQUIDO SEMINALE',
-    macro_category: 'LABORATORIO ALTRO',
+    macro_category: 'LABORATORIO',
     rules: [(userProfile) => userProfile.sex === 'M'],
   },
   {
@@ -79,9 +79,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.active-lab-exam-tab {
-  background-color: #BBDEFB;
-}
-</style>

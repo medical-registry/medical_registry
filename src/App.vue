@@ -70,4 +70,7 @@ export default {
     text-transform: capitalize!important;
   }
 }
+.active-lab-exam-tab {
+  background-color: #BBDEFB;
+}
 </style>

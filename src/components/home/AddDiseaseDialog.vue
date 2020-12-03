@@ -154,9 +154,6 @@ export default {
           if (this.onAdd) {
             this.onAdd();
           }
-        })
-        .catch((e) => {
-          console.log(e.message);
         });
     },
   },

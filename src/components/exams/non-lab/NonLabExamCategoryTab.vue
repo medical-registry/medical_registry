@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card elevation="0" class="mt-10">
+    <v-card elevation="0">
       <v-container :class="timelineItems && timelineItems.length > 0 ? 'text-right': 'text-center'">
         <AddNonLabExamDialog
           :macro_category="macro_category"
@@ -8,7 +8,8 @@
           :units="[]"
           :user_id="userId"
           v-on:created="fetchExams"
-          :addButtonAlign="timelineItems && timelineItems.length> 0 ?'text-right' : 'text-center'"/>
+          :addButtonAlign="timelineItems && timelineItems.length> 0 ?
+          'text-right' : 'text-center'"/>
       </v-container>
       <v-container v-if="timelineItems && Object.keys(timelineItems).length>0">
         <v-timeline  align-top dense>

@@ -1,6 +1,6 @@
 <template>
-  <tr :class="exam.highlight ?'font-weight-bold':''" v-if="!editing">
-    <td class="text-capitalize py-5 pl-0">{{ (def ? def.name : '').toLowerCase() }}</td>
+  <tr :class="exam.highlight ?'font-weight-bold px-2':'px-3'" v-if="!editing">
+    <td class="text-capitalize py-5">{{ (def ? def.name : '').toLowerCase() }}</td>
     <td class="py-20">{{ exam.value }}</td>
     <td class="py-26">{{ exam.unit }}</td>
     <td class="text-right py-5" colspan="2">
@@ -38,8 +38,8 @@
     <td>
       <v-checkbox v-model="exam.highlight" label="Segnalato"/>
     </td>
-    <td class="text-right">
-      <v-btn color="error" fab x-small dark elevation="0" @click="editing = false">
+    <td class="text-right" colspan="2">
+      <v-btn color="error" fab x-small dark elevation="0" @click="cancel()">
         <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-btn color="primary" fab x-small dark elevation="0" class="mr-0 ml-3" @click="save()">
@@ -76,6 +76,7 @@ export default {
       this.$emit('delete');
     },
     async save() {
+      if (!this.exam.id_exam_type) return;
       this.exam.update = moment().format();
       if (!this.item) {
         this.exam.creation = moment().format();
@@ -88,6 +89,10 @@ export default {
       if (!def) { return; }
       this.def = def;
       this.exam.id_exam_type = def.id;
+    },
+    cancel() {
+      this.editing = false;
+      this.$emit('cancel');
     },
   },
   data() {

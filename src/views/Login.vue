@@ -54,10 +54,8 @@ export default {
       await this.$router.push({ path: '/patient_home' });
     },
     doctorLogin() {
-      console.log('patient login called');
     },
     operatorLogin() {
-      console.log('patient login called');
     },
   },
 };

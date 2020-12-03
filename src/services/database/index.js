@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Dexie from 'dexie';
 import { version, defs } from '@/assets/db_def.json';
 import dbData from '@/assets/db_data.json';

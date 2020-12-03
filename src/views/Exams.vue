@@ -1,8 +1,10 @@
 <template>
   <v-container fluid v-if="tabs" class="pa-0">
-      <v-toolbar color="blue lighten-5" flat elevation="2">
+      <v-toolbar flat elevation="2" class="mb-1">
         <template v-slot:default>
-          <v-tabs v-model="tab" centered slider-color="blue" grow>
+          <v-tabs v-model="tab" centered icons-and-text
+                  grow md12 outlined hide-slider
+                  active-class="active-lab-exam-tab">
             <v-tab v-for="(tab, key, i) in tabs" :key="i" :href="`#tab-${i}`">
               {{tab.macro_category}}
             </v-tab>
