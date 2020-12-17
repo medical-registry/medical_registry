@@ -1,6 +1,6 @@
 <template>
   <v-timeline-item small>
-    <v-card class="elevation-3 px-4">
+    <v-card class="elevation-3 px-4" v-if="group">
       <v-card-title class="headline capitalized">
         <v-row>
           <v-col v-if="!group.to" md9>
@@ -84,6 +84,10 @@
           </template>
         </v-simple-table>
       </v-card-text>
+      <p v-if="group.diagnostic_question">
+        <strong>Documenti:</strong>
+        <RelatedFiles :id-care="group.id_care" related-table="exams"/>
+      </p>
     </v-card>
   </v-timeline-item>
 </template>
@@ -92,10 +96,12 @@ import AddExamDialog from '@/components/exams/lab/AddExamDialog.vue';
 import EditableExamValue from '@/components/exams/lab/EditableExamValue.vue';
 import db from '@/services/database';
 import moment from 'moment';
+import RelatedFiles from '@/components/file_manager/RelatedFiles.vue';
 
 export default {
   name: 'LabExamItem',
   components: {
+    RelatedFiles,
     AddExamDialog,
     EditableExamValue,
   },

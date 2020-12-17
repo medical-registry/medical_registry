@@ -1,5 +1,5 @@
 {
-  "version": 58,
+  "version": 59,
   "defs": [
     {
       "table": "metas",
@@ -77,9 +77,14 @@
       "indexes": "&id"
     },
     {
+      "table": "file_group",
+      "columns": ["id" ,"id_person", "id_care", "related_table", "title", "category", "type", "date", "description", "creation", "update"],
+      "indexes": "++id,id_person,[id_care+related_table]"
+    },
+    {
       "table": "filepath",
-      "columns": ["id_person", "id_care", "id_path", "id_category", "path", "title", "date", "description", "creation", "update"],
-      "indexes": "&[id_person+id_path+id_care],id_person,id_path,id_care,id_category"
+      "columns": ["id", "id_group", "group_order", "path", "name", "content-type", "creation", "update"],
+      "indexes": "++id,id_group"
     },
     {
       "table": "hospitalization",

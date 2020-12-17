@@ -2,11 +2,11 @@
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on, attrs }">
        <span class="text-subtitle-2 capitalized">
-          <v-icon color="black" small>mdi-map-marker</v-icon>
-          <a v-bind="attrs" v-on="on">
+         <v-icon color="black" small>mdi-map-marker</v-icon>
+         <a v-bind="attrs" v-on="on">
            {{fullAddress}}
-          </a>
-        </span>
+         </a>
+       </span>
     </template>
     <v-card>
       <v-card-title class="pa-5">

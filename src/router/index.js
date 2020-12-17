@@ -130,6 +130,13 @@ const routes = [
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
   {
+    path: '/receipts',
+    name: 'Prenotazioni',
+    icon: 'mdi-calendar',
+    component: () => import('../views/Receipts.vue'),
+    meta: { requiresLogin: true, drawer: true, groupHome: true },
+  },
+  {
     path: '/about',
     name: 'About',
     icon: 'mdi-information-variant',
