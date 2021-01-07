@@ -29,11 +29,16 @@
           <span class="title">{{group.def.name.toLowerCase()}}</span><br>
         </span>
         <span class="text-subtitle-1">
-          <strong>Quesito:</strong>
+          <strong>Quesito:&nbsp;</strong>
           <span class="capitalized">
             {{group.diagnostic_question.toLowerCase()}}
           </span>
         </span>
+        <p v-if="group.requisites">
+          <strong>Requisiti:&nbsp;</strong>
+          <span>{{group.requisites}}</span>
+          <br/>
+        </p>
         <p class="mt-3" v-if="group.note">
           <strong>Esito</strong>
           <br/>

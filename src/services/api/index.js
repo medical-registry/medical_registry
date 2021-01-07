@@ -115,6 +115,19 @@ const fetchUserAllergies = async (userId) => {
   }));
 };
 
+const fetchAllExams = async (userId) => {
+  const userExams = await db.exams.where({ id_person: userId }).toArray();
+  const defsId = userExams
+    .filter((exam) => exam.macro_category !== 'LABORATORIO')
+    .map((item) => item.id_exam);
+  const defs = await db.exam_register.where('id').anyOf(defsId).toArray();
+  const keyedDefs = keyBy(defs, 'id');
+  return userExams.map((item) => ({
+    ...item,
+    def: keyedDefs[item.id_exam],
+  }));
+};
+
 const fetchUserExams = async (userId, withValues = false) => {
   const userExams = await db.exams.where({ id_person: userId }).toArray();
   if (withValues) {
@@ -168,4 +181,5 @@ export default {
   login,
   fetchUserExams,
   oneToOneJoin,
+  fetchAllExams,
 };

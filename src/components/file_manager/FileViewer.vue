@@ -140,6 +140,9 @@ export default {
   padding: 7px;
   width: 100%;
 }
+.v-image.v-responsive {
+  max-height: 218px;
+}
 .back-button {
   position: absolute;
   top: 0;

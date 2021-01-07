@@ -68,6 +68,10 @@
       </v-card>
       <v-layout row wrap>
         <v-flex md4 sm12>
+          <ActiveTimeline
+            type="exams"
+            :user-id="patientProfile.id"
+            title="Prossimi Esami/Visite"/>
         </v-flex>
         <v-flex md4 sm12>
             <ActiveTimeline

@@ -28,13 +28,13 @@
       </v-card-title>
       <v-card-text>
         <p v-if="group.diagnostic_question">
-          <strong>Quesito:</strong>
+          <strong>Quesito:&nbsp;</strong>
           <span class="capitalized">
             {{group.diagnostic_question.toLowerCase()}}
           </span>
         </p>
         <p v-if="group.requisites">
-          <strong>Requisiti:</strong>
+          <strong>Requisiti:&nbsp;</strong>
           <span>{{group.requisites}}</span>
           <br/>
         </p>

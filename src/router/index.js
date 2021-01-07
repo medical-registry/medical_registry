@@ -116,7 +116,7 @@ const routes = [
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
   {
-    path: '/receipts',
+    path: '/prescriptions',
     name: 'Ricette',
     icon: 'mdi-prescription',
     component: () => import('../views/Receipts.vue'),
@@ -130,7 +130,7 @@ const routes = [
     meta: { requiresLogin: true, drawer: true, groupHome: true },
   },
   {
-    path: '/receipts',
+    path: '/prenotation',
     name: 'Prenotazioni',
     icon: 'mdi-calendar',
     component: () => import('../views/Receipts.vue'),

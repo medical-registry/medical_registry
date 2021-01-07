@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600px">
+  <v-dialog v-model="dialog" max-width="700px" persistent>
     <template v-slot:activator="{ on, attrs }">
       <div class="my-5 light-blue--text">
         <v-btn class="mx-2"
@@ -17,110 +17,121 @@
         <span class="headline">Aggiungi Prescrizione</span>
       </v-card-title>
       <v-card-text>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form ref="form" v-model="valid">
           <v-select
             :items="reasons"
             item-text="name"
+            item-value="value"
             label="Motivo delle Prescrizione"
             v-model="reason"
-            return-object
             @change="resetReason"
-            prepend-icon="mdi-help-circle-outline"
-          />
+            :rules="[v => !!v || 'Seleziona Motivo Della Prescrizione']"
+            prepend-icon="mdi-help-circle-outline"/>
           <div v-if="reason">
             <v-combobox
-              v-if="reason.value === 'allergy'"
+              v-if="reason === 'allergy'"
               v-model="allergy"
               :items="allergyList"
               label="Allergia"
               item-text="name"
+              :rules="[v => !!v || 'Seleziona Motivo Della Prescrizione']"
               prepend-icon="mdi-asterisk"/>
             <v-combobox
-              v-if="reason.value === 'trauma'"
+              v-if="reason === 'trauma'"
               v-model="trauma"
               :items="traumaList"
               label="Trauma"
               item-text="name"
+              :rules="[v => !!v || 'Seleziona Motivo Della Prescrizione']"
               prepend-icon="mdi-bandage"/>
             <v-combobox
-              v-if="reason.value === 'intervention'"
+              v-if="reason === 'intervention'"
               v-model="intervention"
               :items="interventionList"
               label="Intervento"
               item-text="name"
+              :rules="[v => !!v || 'Seleziona Motivo Della Prescrizione']"
               prepend-icon="mdi-hospital-building"/>
             <v-combobox
-              v-if="reason.value === 'disease'"
+              v-if="reason === 'disease'"
               v-model="disease"
               :items="diseaseList"
               label="Diagnosi"
               item-text="name"
-              prepend-icon="mdi-medical-bag"/>
+              :rules="[v => !!v || 'Seleziona Motivo Della Prescrizione']"
+              prepend-icon="mdi-clipboard-plus-outline"/>
           </div>
           <div v-if="disease || allergy || intervention || trauma">
             <AutocompleteSearch
-              invalid-hint="Seleziona Farmaco"
               label="Farmaco"
-              :required="true"
+              :rules="[v => !!v || 'Seleziona Farmaco']"
+              required
               :table="database.medicine_register"
               v-on:change="drug = $event"/>
-            <v-select
-              :items="frequencyList"
-              item-text="value"
-              label="Frequenza"
-              v-model="daily_frequency"
-              prepend-icon="mdi-history"
-              required/>
-            <v-menu
-              v-model="fromDialog"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="from"
-                  label="Inizio"
-                  prepend-icon="event"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                  :rules="[v => !!v || 'Aggiungi Data Diagnosi']"/>
-              </template>
-              <v-date-picker v-model="from" @input="fromDialog = false" locale="it"/>
-            </v-menu>
-            <v-menu
-              v-model="toDialog"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="to"
-                  label="Fine"
-                  prepend-icon="event"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"/>
-              </template>
-              <v-date-picker v-model="to" @input="toDialog = false" locale="it"/>
-            </v-menu>
-            <v-text-field
-              v-model="dosage"
-              label="Dosaggio"
-            />
-            <v-text-field
-              v-model="unit"
-              label="Unità"/>
-            <v-text-field
-              v-model="body_impacted"
-              label="Parte del corpo interessata"
-            />
+            <v-row>
+              <v-col md="6">
+                <v-select
+                  :items="frequencyList"
+                  item-text="value"
+                  label="Frequenza *"
+                  :rules="[v => !!v || 'Seleziona Frequenza']"
+                  v-model="daily_frequency"
+                  prepend-icon="mdi-history"
+                  required/>
+              </v-col>
+              <v-col md="6">
+                <v-text-field prepend-icon="mdi-human" v-model="body_impacted"
+                              label="Parte del corpo interessata"/>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col md="6">
+                <v-menu
+                  v-model="fromDialog"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      class="text-capitalize"
+                      :value="fromDateText"
+                      label="Inizio *"
+                      prepend-icon="event"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      :rules="[v => !!v || 'Aggiungi Data Inizio Prescrizione']"/>
+                  </template>
+                  <v-date-picker v-model="from" @input="fromDialog = false" locale="it"/>
+                </v-menu>
+              </v-col>
+              <v-col md="6">
+                <v-menu
+                  class="text-capitalize"
+                  v-model="toDialog"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      :value="toDateText"
+                      label="Fine"
+                      prepend-icon="event"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"/>
+                  </template>
+                  <v-date-picker v-model="to" @input="toDialog = false" locale="it"/>
+                </v-menu>
+              </v-col>
+            </v-row>
             <v-textarea
               class="mt-5"
+              rows="2"
               outlined
               placeholder="Note"
               label="Note"
@@ -129,11 +140,11 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
+        <v-btn color="error" text @click="cancel" >
+          Annulla
+        </v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1"
-               text
-               @click="save"
-               :disabled="!valid">
+        <v-btn color="blue darken-1" text @click="save" :disabled="!valid">
           Salva
         </v-btn>
       </v-card-actions>
@@ -188,7 +199,8 @@ export default {
   mounted() {
     db.choices.where('category')
       .equalsIgnoreCase('frequenza')
-      .toArray().then((res) => { this.frequencyList = res; });
+      .toArray()
+      .then((res) => { this.frequencyList = res; });
     [
       {
         register: db.disease_register,
@@ -250,6 +262,14 @@ export default {
     user() {
       return this.$store.state.user;
     },
+    fromDateText() {
+      if (!this.from) return '';
+      return moment(this.from).format('LL');
+    },
+    toDateText() {
+      if (!this.to) return '';
+      return moment(this.to).format('LL');
+    },
   },
   methods: {
     resetReason() {
@@ -257,6 +277,11 @@ export default {
       this.trauma = null;
       this.disease = null;
       this.intervention = null;
+    },
+    cancel() {
+      this.dialog = false;
+      this.resetReason();
+      this.$refs.form.reset();
     },
     async save() {
       await db.medicines

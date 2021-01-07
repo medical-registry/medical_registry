@@ -26,7 +26,7 @@
       </v-card-text>
       <v-card-actions class="pa-5">
         <v-spacer/>
-        <v-btn>Cerca Google Maps</v-btn>
+        <v-btn>Apri su Google Maps</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

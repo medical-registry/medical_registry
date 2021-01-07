@@ -205,7 +205,7 @@ export default {
     },
     cancel() {
       this.dialog = false;
-      this.$refs.form.reset();
+      this.reset();
     },
     updateExamDef(def) {
       if (!def) { return; }
@@ -241,7 +241,6 @@ export default {
       this.timePicker = false;
       this.valid = false;
       this.resetDates();
-      this.$refs.form.reset();
       this.exam = this.buildFormValues();
     },
     async save() {
@@ -249,7 +248,6 @@ export default {
       const res = await this.database.exams.get(id);
       if (this.editing) {
         this.$emit('updated', res);
-        this.$refs.form.reset();
         this.dialog = false;
       } else {
         this.$emit('created', res);
@@ -265,6 +263,10 @@ export default {
       };
       if (this.editing && this.initialValue) {
         formValues = { ...this.initialValue };
+        this.valid = true;
+        this.dateRange = this.editing && formValues.to ? [formValues.from, formValues.to] : null;
+        this.interval = !!(this.editing && formValues.to);
+        this.singleDate = this.editing && !formValues.to ? formValues.from : null;
       }
       return formValues;
     },
@@ -283,12 +285,12 @@ export default {
       def: this.editing ? this.initialValue.def : null,
       database: db,
       dialog: false,
-      timePicker: false,
       valid: false,
       dateDialog: false,
+      singleDateDialog: false,
+      timePicker: false,
       dateRange: this.editing && formValues.to ? [formValues.from, formValues.to] : null,
       interval: !!(this.editing && formValues.to),
-      singleDateDialog: false,
       singleDate: this.editing && !formValues.to ? formValues.from : null,
       exam: formValues,
       examsTypes: null,
