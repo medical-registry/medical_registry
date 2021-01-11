@@ -1,7 +1,14 @@
 <template>
   <v-dialog v-model="dialog" max-width="800px" persistent>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn v-if="!editing" color="primary lighten-1" dark v-bind="attrs" v-on="on">
+      <div v-if="rounded" class="my-5 mx-1 light-blue--text">
+        <v-btn class="mx-2" fab color="primary lighten-1" dark
+               v-bind="attrs"
+               v-on="on">
+          <v-icon dark>mdi-plus</v-icon>
+        </v-btn>
+      </div>
+      <v-btn v-else-if="!editing" color="primary lighten-1" dark v-bind="attrs" v-on="on">
         Aggiungi Esame
       </v-btn>
       <v-btn v-else color="primary" fab x-small dark elevation="0"
@@ -9,7 +16,7 @@
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
-    <v-card>
+    <v-card class="pa-2">
       <v-card-title v-if="!editing">Aggiungi Esame</v-card-title>
       <v-card-title v-else>Aggiorna Esame</v-card-title>
       <v-form ref="form" v-model="valid">
@@ -130,12 +137,14 @@
             </v-row>
             <v-textarea v-if="macro_category !== 'LABORATORIO ALTRO'"
               class="mt-5"
+              rows="3"
               outlined
               placeholder="Note"
               label="Note"
               v-model="exam.note"/>
             <v-textarea v-else
               class="mt-5"
+              rows="3"
               outlined
               placeholder="Esito"
               label="Esito *"
@@ -143,7 +152,7 @@
               :rules="[v => !!v || 'Aggiungi Esito']"/>
           </div>
       </v-card-text>
-        <v-card-actions class="px-5 pb-5">
+        <v-card-actions class="px-5 pb-3">
           <v-btn color="error" @click="cancel">Annulla</v-btn>
           <v-spacer/>
           <v-btn color="primary" @click="save" :disabled="!valid">Salva</v-btn>
@@ -182,6 +191,10 @@ export default {
     user_id: null,
     units: null,
     initialValue: null,
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
     editing: {
       type: Boolean,
       default: false,
@@ -248,6 +261,7 @@ export default {
       }
     },
     reset() {
+      this.$refs.form.reset();
       this.dialog = false;
       this.dateDialog = false;
       this.dateRange = null;

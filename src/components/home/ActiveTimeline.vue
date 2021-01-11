@@ -79,7 +79,7 @@
     <v-card-actions>
       <AddDiseaseDialog v-if="type === 'diagnosis'" :on-add="fetchData"/>
       <AddPrescriptionDialog v-if="type === 'prescriptions'" :on-add="fetchData"/>
-      <AddExamDialog v-if="type === 'exams'" :on-add="fetchData"/>
+      <AddExamDialog v-if="type === 'exams'" :on-add="fetchData" :rounded="true" :editing="false"/>
     </v-card-actions>
   </v-card>
 </template>

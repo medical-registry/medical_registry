@@ -55,10 +55,10 @@
               <p class="text-md-body-1 text-sm-body-2 text-body-2 font-weight-bold mt-4">
                 Allergie
               </p>
-              <AddAllergyDialog :on-add="fetchData" :user-id="user.id"
+              <AddAllergyDialog @change="fetchData" :user-id="user.id"
                                 :editing-record="allergy"
-                                v-for="allergy in allergies" :key="allergy.id_allergy"/>
-              <AddAllergyDialog :on-add="fetchData" :user-id="user.id"/>
+                                v-for="allergy in allergies" :key="allergy.id"/>
+              <AddAllergyDialog @change="fetchData" :user-id="user.id"/>
             </v-tab-item>
             <v-tab-item value="contacts">
              <Contacts :profile="patientProfile"/>
@@ -193,23 +193,8 @@ export default {
       this.loading = true;
       this.patientProfile = await api.fetchPatientProfile(this.user.id);
       this.allergies = await api.fetchUserAllergies(this.user.id);
-      this.allergies = this.allergies.map((allergy) => ({
-        ...allergy,
-        color: this.selectAllergyColor(allergy),
-        textColor: allergy.to ? 'black' : 'white',
-      }));
+      this.allergies = this.allergies.map((allergy) => ({ ...allergy }));
       this.loading = false;
-    },
-    selectAllergyColor(allergy) {
-      if (allergy.to) {
-        return 'gray';
-      }
-      switch (allergy.severity) {
-        case 'BASSA': return 'yellow darken-2';
-        case 'MEDIA': return 'orange darken-2';
-        case 'ALTA': return 'deep-orange darken-2';
-        default: return 'gray';
-      }
     },
     filterProfileFields(section) {
       return fields.filter((datum) => datum.section === section
