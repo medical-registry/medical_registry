@@ -261,7 +261,7 @@ export default {
       }
     },
     reset() {
-      this.$refs.form.reset();
+      if (!this.editing) this.$refs.form.reset();
       this.dialog = false;
       this.dateDialog = false;
       this.dateRange = null;

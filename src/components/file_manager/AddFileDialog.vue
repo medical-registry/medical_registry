@@ -131,7 +131,6 @@ export default {
         this.fileModel.creation = moment().format();
       }
       const id = await db.file_group.put(this.fileModel);
-      console.log(id);
       if (!this.baseModel) {
         const file = {
           id_group: id,

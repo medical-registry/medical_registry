@@ -142,7 +142,8 @@ export default {
       toDialog: false,
       dialog: false,
       def: this.editingRecord ? this.editingRecord.def : null,
-      record: this.editingRecord ? { ...this.editingRecord } : { ...defaultRecord },
+      record: this.editingRecord ? { ...this.editingRecord }
+        : { ...defaultRecord, id_person: this.userId },
     };
   },
   computed: {
@@ -190,9 +191,6 @@ export default {
         delete this.record.to;
       }
       await db.allergies.put(this.record);
-      // if (this.editingRecord) {
-      //   this.editingRecord = { ...this.record };
-      // }
       this.reset();
       this.$emit('change');
       this.dialog = false;
